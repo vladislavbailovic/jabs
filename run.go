@@ -1,6 +1,7 @@
 package main
 
 import (
+	"fmt"
 	"io/ioutil"
 	"os"
 	"os/exec"
@@ -9,6 +10,10 @@ import (
 
 type Executable interface {
 	Execute() (string, error)
+}
+
+type Scriptable interface {
+	GetScript() string
 }
 
 type Command struct {
@@ -31,6 +36,10 @@ func NewExecutable(cmd string) Executable {
 	return &Cmdlet{command}
 }
 
+func NewScriptable(cmd string) Scriptable {
+	return NewExecutable(cmd).(Scriptable)
+}
+
 func (c *Cmdlet) Execute() (string, error) {
 	args := []string{"-c", c.source}
 	out, err := exec.Command("/bin/sh", args...).Output()
@@ -38,6 +47,10 @@ func (c *Cmdlet) Execute() (string, error) {
 		return "", err
 	}
 	return strings.TrimSpace(string(out)), nil
+}
+
+func (c Cmdlet) GetScript() string {
+	return c.source
 }
 
 func (s *Scriptlet) Execute() (string, error) {
@@ -52,4 +65,16 @@ func (s *Scriptlet) Execute() (string, error) {
 		return "", err
 	}
 	return strings.TrimSpace(string(out)), nil
+}
+
+func (s Scriptlet) GetScript() string {
+	file := "/data/Projects/geek/jabs/tmp"
+	ret := []string{
+		fmt.Sprintf("cat <<'EOF' > %s", file),
+	}
+	ret = append(ret, strings.Split(s.source, "\n")...)
+	ret = append(ret, "EOF")
+	ret = append(ret, fmt.Sprintf("chmod u+x %s && %s", file, file))
+	ret = append(ret, fmt.Sprintf("rm %s", file))
+	return strings.Join(ret, "\n")
 }
