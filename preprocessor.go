@@ -5,6 +5,12 @@ import (
 	"strings"
 )
 
+type Limit int
+
+const (
+	LIMIT_MACRO_EXPANSION_PASS Limit = 1000
+)
+
 type Macro struct {
 	Name  string
 	Value string
@@ -15,7 +21,7 @@ type Task string
 type Rule struct {
 	Name      string
 	Observes  []string
-	DependsOn []string // @TODO these should actually be other rules
+	DependsOn []string
 	Tasks     []string
 }
 
@@ -34,6 +40,7 @@ func NewPreprocessor(file string) Preprocessor {
 
 func (p *Preprocessor) initMacros(dfns []MacroDefinition) {
 	macros := map[string]Macro{}
+	dfns = append(GetSystemMacroDefinitions(), dfns...)
 	for _, dfn := range dfns {
 		value := dfn.Value
 		if "" == value {
@@ -66,7 +73,7 @@ func (p *Preprocessor) initRules(dfns []RuleDefinition) {
 		}
 		observes := []string{}
 		for _, obs := range dfn.Observes {
-			observes = append(observes, obs)
+			observes = append(observes, p.expand(obs))
 		}
 		name := p.expand(dfn.Name)
 		rules[name] = Rule{
@@ -81,7 +88,7 @@ func (p *Preprocessor) initRules(dfns []RuleDefinition) {
 
 func (p Preprocessor) expand(subj string) string {
 	result := subj
-	for i := 0; i < 1000; i++ {
+	for i := Limit(0); i < LIMIT_MACRO_EXPANSION_PASS; i++ {
 		expanded := false
 		for name, macro := range p.Macros {
 			key := getExpansionKey(name)
@@ -104,7 +111,7 @@ func getExpansionKey(what string) string {
 
 func expandMacroDfns(subj string, in string, dfns []MacroDefinition) string {
 	result := subj
-	for i := 0; i < 1000; i++ {
+	for i := Limit(0); i < LIMIT_MACRO_EXPANSION_PASS; i++ {
 		expanded := false
 		for _, macro := range dfns {
 			if macro.Name == in {
@@ -126,4 +133,11 @@ func expandMacroDfns(subj string, in string, dfns []MacroDefinition) string {
 		}
 	}
 	return result
+}
+
+func GetSystemMacroDefinitions() []MacroDefinition {
+	return []MacroDefinition{
+		MacroDefinition{Name: "System:LastRuntime", Value: "0"},
+		MacroDefinition{Name: "System:Now", Value: "0"},
+	}
 }
