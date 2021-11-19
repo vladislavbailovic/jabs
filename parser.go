@@ -9,6 +9,26 @@ import (
 	"gopkg.in/yaml.v2"
 )
 
+type DefinitionType string
+
+const (
+	DFN_MACRO DefinitionType = "Macro"
+	DFN_RULE                 = "Rule"
+)
+
+type MacroDefinition struct {
+	Name    string `yaml:"Name"`
+	Command string `yaml:"Command"`
+	Value   string `yaml:"Value"`
+}
+
+type RuleDefinition struct {
+	Name      string   `yaml:"Name"`
+	Type      string   `yaml:"Type"`
+	DependsOn []string `yaml:"DependsOn"`
+	Tasks     []string `yaml:"Tasks"`
+}
+
 type Parser struct {
 	MacroDefinitions []MacroDefinition
 	RuleDefinitions  []RuleDefinition
@@ -27,7 +47,7 @@ func NewParser(file string) Parser {
 
 func parseMacros(data []byte) []MacroDefinition {
 	dcd := yaml.NewDecoder(bytes.NewReader(data))
-	instance := make(map[string]MacroDefinition)
+	instance := make(map[DefinitionType]MacroDefinition)
 	items := []MacroDefinition{}
 	for {
 		err := dcd.Decode(&instance)
@@ -38,7 +58,7 @@ func parseMacros(data []byte) []MacroDefinition {
 			break
 		}
 
-		item, ok := instance["Macro"]
+		item, ok := instance[DFN_MACRO]
 		if ok {
 			items = append(items, item)
 			continue
@@ -49,7 +69,7 @@ func parseMacros(data []byte) []MacroDefinition {
 
 func parseRules(data []byte) []RuleDefinition {
 	dcd := yaml.NewDecoder(bytes.NewReader(data))
-	instance := make(map[string]RuleDefinition)
+	instance := make(map[DefinitionType]RuleDefinition)
 	items := []RuleDefinition{}
 	for {
 		err := dcd.Decode(&instance)
@@ -60,7 +80,7 @@ func parseRules(data []byte) []RuleDefinition {
 			break
 		}
 
-		item, ok := instance["Rule"]
+		item, ok := instance[DFN_RULE]
 		if ok {
 			items = append(items, item)
 			continue
