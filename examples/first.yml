@@ -47,6 +47,7 @@ Rule:
   Tasks:
     - echo ${{Two}}
     - echo '${{One}} and ${{Recursive}} somewhere in there'
+    - echo ${{System:LastRuntime}}
 ---
 
 Rule:
