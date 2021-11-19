@@ -38,7 +38,7 @@ func Test_EvaluationStack_Standalone(t *testing.T) {
 func Test_EvaluationStack_Observable(t *testing.T) {
 	p := NewPreprocessor("./examples/first.yml")
 	es := NewEvaluationStack("Wants subtask with failing observable", p.Rules)
-	expectedRules := 1
+	expectedRules := 2
 	if len(es.stack) != expectedRules {
 		fmt.Println("Stack")
 		fmt.Println("--------------------")

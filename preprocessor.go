@@ -51,6 +51,7 @@ func (p *Preprocessor) initMacros(dfns []MacroDefinition) {
 			cmd := NewExecutable(expanded)
 			out, err := cmd.Execute()
 			if err != nil {
+				fmt.Printf("ERROR: unable to run command %s for %s\n", expanded, dfn.Name)
 				panic(err)
 			}
 			expanded = out
@@ -120,18 +121,48 @@ func expandMacroDfns(subj string, in string, dfns []MacroDefinition) string {
 		for _, macro := range dfns {
 			if macro.Name == in {
 				// @TODO warn about recursion
-				break
-			}
-			key := getExpansionKey(macro.Name)
-			expanded = strings.Contains(result, key)
-			if !expanded {
 				continue
 			}
 			value := macro.Value
 			if "" == value {
-				value = macro.Command
+				continue
 			}
+			key := getExpansionKey(macro.Name)
+			if !strings.Contains(result, key) {
+				continue
+			}
+			expanded = expanded || strings.Contains(result, key)
 			result = strings.Replace(result, key, value, -1)
+		}
+		if !expanded {
+			break
+		}
+	}
+	for i := Limit(0); i < LIMIT_MACRO_EXPANSION_PASS; i++ {
+		expanded := false
+		for _, macro := range dfns {
+			if macro.Name == in {
+				// @TODO warn about recursion
+				continue
+			}
+			value := macro.Command
+			if "" == value {
+				continue
+			}
+			key := getExpansionKey(macro.Name)
+			expanded = expanded || strings.Contains(result, key)
+			if !strings.Contains(result, key) {
+				continue
+			}
+			// @TODO: Value/Command expansion race condition!!!
+			fmt.Println("executing", value)
+			cmd := NewExecutable(value)
+			out, err := cmd.Execute()
+			if err != nil {
+				fmt.Printf("ERROR: unable to run command %s for %s\n", macro.Command, macro.Name)
+				panic(err)
+			}
+			result = strings.Replace(result, key, out, -1)
 		}
 		if !expanded {
 			break

@@ -23,10 +23,16 @@ func (es *EvaluationStack) getSubstack(root string, stack []Rule) []Rule {
 	}
 
 	// Test rule observables state - should we even consider this rule?
-	for _, observable := range rule.Observes {
-		cmd := NewExecutable(observable)
-		_, err := cmd.Execute()
-		if err != nil {
+	if len(rule.Observes) > 0 {
+		observedChange := false
+		for _, observable := range rule.Observes {
+			cmd := NewExecutable(observable)
+			_, err := cmd.Execute()
+			if err != nil {
+				observedChange = true
+			}
+		}
+		if !observedChange {
 			return stack
 		}
 	}

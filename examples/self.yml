@@ -1,0 +1,28 @@
+# This will be a self-hosting build file at some point
+Macro:
+  Name: ChangedGofiles
+  Command: find . -name '*.go' -newermt '${{OutfileTimestamp}}' -print0 | tr '\0' ' '
+---
+
+Macro:
+  Name: Outfile
+  Value: ./jabs
+---
+
+Macro:
+  Name: OutfileTimestamp
+  Command: stat --format %Y ${{Outfile}} || echo "0"
+---
+
+Macro:
+  Name: TenMinutesAgo
+  Command: date -d@$(( `date +'%s'` - 600 ))
+---
+
+Rule:
+  Name: build
+  Observes:
+    - test -f ./jabs || exit 1
+    - test -z "${{ChangedGofiles}}" || exit 1
+  Tasks:
+    - go build .

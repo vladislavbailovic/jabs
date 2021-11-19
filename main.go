@@ -7,11 +7,11 @@ import (
 
 // Kinda print
 func main() {
-	p := NewPreprocessor("./examples/first.yml")
-	stack := NewEvaluationStack("root", p.Rules)
+	p := NewPreprocessor("./examples/self.yml")
+	es := NewEvaluationStack("build", p.Rules)
 	out := []string{"#!/bin/bash", ""}
 
-	for idx, rule := range stack.stack {
+	for idx, rule := range es.stack {
 		out = append(out, fmt.Sprintf("# Rule %d -- %s", idx, rule.Name))
 		for _, task := range rule.Tasks {
 			cmd := NewScriptable(task)
