@@ -1,23 +1,68 @@
 # This is the first YML example
+
+# A document can contain a macro and a rule
+Macro:
+  Name: Zero
+  Value: but can still reference ${{Two}}
+Rule:
+  Name: Task zero
+---
+
+# Or a single macro
+Macro:
+  Name: Zero prim
+  Value: some value
+---
+
+# Macro can have commands:
+# - multiline comamnd (scriptlet)
+# - a single line command, called inline
 Macro:
   Name: One
   Command: |
     #!/bin/bash
     date +'%F %J'
 ---
+
+# Macro can have fixed value
 Macro:
   Name: Two
   Value: aw yasss
 ---
+
+# Macro can be re-expanded recursively
 Macro:
   Name: Recursive
   Value: Has "${{Two}}" somewhere in here
 ---
+
+# A document can also contain just a rule
 Rule:
   Name: root
   Type: File|Git|Docker|Virtual*
   DependsOn:
-    - Another
+    - Task zero
+    - Another rule
   Tasks:
     - echo ${{Two}}
     - ${{One}} and ${{Recursive}} somewhere in there
+---
+
+Rule:
+  Name: Another rule
+  DependsOn:
+    - Dependency rule
+  Tasks:
+    - ls
+---
+
+Rule:
+  Name: Standalone rule
+  Tasks:
+    - # this is a shell comment
+---
+
+Rule:
+  Name: Dependency rule
+  Tasks:
+    - echo "----"

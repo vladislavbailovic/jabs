@@ -10,11 +10,13 @@ type Macro struct {
 	Value string
 }
 
+type Task string
+
 type Rule struct {
 	Name      string
 	Type      string
 	DependsOn []string // @TODO these should actually be other rules
-	Tasks     []string // @TODO these should actually be commands
+	Tasks     []string
 }
 
 type Preprocessor struct {
