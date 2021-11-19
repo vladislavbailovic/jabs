@@ -39,7 +39,7 @@ func (p *Preprocessor) initMacros(dfns []MacroDefinition) {
 		if "" == value {
 			value = dfn.Command
 		}
-		expanded := expandMacroDfns(value, dfns)
+		expanded := expandMacroDfns(value, dfn.Name, dfns)
 		if dfn.Command != "" {
 			cmd := NewExecutable(expanded)
 			out, err := cmd.Execute()
@@ -97,11 +97,14 @@ func getExpansionKey(what string) string {
 	return fmt.Sprintf("${{%s}}", what)
 }
 
-func expandMacroDfns(subj string, dfns []MacroDefinition) string {
+func expandMacroDfns(subj string, in string, dfns []MacroDefinition) string {
 	result := subj
 	for i := 0; i < 1000; i++ {
 		expanded := false
 		for _, macro := range dfns {
+			if macro.Name == in {
+				continue
+			}
 			key := getExpansionKey(macro.Name)
 			expanded = strings.Contains(result, key)
 			if !expanded {
@@ -109,7 +112,6 @@ func expandMacroDfns(subj string, dfns []MacroDefinition) string {
 			}
 			value := macro.Value
 			if "" == value {
-				// @TODO execute this???
 				value = macro.Command
 			}
 			result = strings.Replace(result, key, value, -1)

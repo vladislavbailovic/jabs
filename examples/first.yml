@@ -33,13 +33,16 @@ Macro:
 # Macro can be re-expanded recursively
 Macro:
   Name: Recursive
-  Value: Has "${{Two}}" somewhere in here
+  Value: Has "${{Recursive}}" somewhere in here
 ---
 
 # A document can also contain just a rule
 Rule:
   Name: root
-  Type: File|Git|Docker|Virtual*
+  Observes:
+    - |
+      #!/bin/bash
+      exit 666
   DependsOn:
     - Task zero
     - Another rule

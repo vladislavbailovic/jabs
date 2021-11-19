@@ -24,7 +24,7 @@ type MacroDefinition struct {
 
 type RuleDefinition struct {
 	Name      string   `yaml:"Name"`
-	Type      string   `yaml:"Type"`
+	Observes  []string `yaml:"Type"`
 	DependsOn []string `yaml:"DependsOn"`
 	Tasks     []string `yaml:"Tasks"`
 }
@@ -47,9 +47,9 @@ func NewParser(file string) Parser {
 
 func parseMacros(data []byte) []MacroDefinition {
 	dcd := yaml.NewDecoder(bytes.NewReader(data))
-	instance := make(map[DefinitionType]MacroDefinition)
 	items := []MacroDefinition{}
 	for {
+		instance := make(map[DefinitionType]MacroDefinition)
 		err := dcd.Decode(&instance)
 		if err != nil {
 			if err != io.EOF {
@@ -61,7 +61,6 @@ func parseMacros(data []byte) []MacroDefinition {
 		item, ok := instance[DFN_MACRO]
 		if ok {
 			items = append(items, item)
-			continue
 		}
 	}
 	return items
@@ -69,9 +68,9 @@ func parseMacros(data []byte) []MacroDefinition {
 
 func parseRules(data []byte) []RuleDefinition {
 	dcd := yaml.NewDecoder(bytes.NewReader(data))
-	instance := make(map[DefinitionType]RuleDefinition)
 	items := []RuleDefinition{}
 	for {
+		instance := make(map[DefinitionType]RuleDefinition)
 		err := dcd.Decode(&instance)
 		if err != nil {
 			if err != io.EOF {
