@@ -40,7 +40,7 @@ Macro:
 Rule:
   Name: root
   Observes:
-    - test `stat --format %Y examples/first.yml` -ge ${{System:Now}} || exit 1
+    - test `stat --format %Y examples/first.yml` -le ${{System:Now}} || exit 1
   DependsOn:
     - Task zero
     - Another rule

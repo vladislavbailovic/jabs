@@ -134,10 +134,3 @@ func expandMacroDfns(subj string, in string, dfns []MacroDefinition) string {
 	}
 	return result
 }
-
-func GetSystemMacroDefinitions() []MacroDefinition {
-	return []MacroDefinition{
-		MacroDefinition{Name: "System:LastRuntime", Value: "0"},
-		MacroDefinition{Name: "System:Now", Value: "0"},
-	}
-}
