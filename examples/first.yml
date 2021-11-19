@@ -1,0 +1,23 @@
+# This is the first YML example
+Macro:
+  Name: One
+  Command: |
+    #!/bin/bash
+    date +'%F %J'
+---
+Macro:
+  Name: Two
+  Value: aw yasss
+---
+Macro:
+  Name: Recursive
+  Value: Has "${{Two}}" somewhere in here
+---
+Rule:
+  Name: root
+  Type: File|Git|Docker|Virtual*
+  DependsOn:
+    - Another
+  Tasks:
+    - echo ${{Two}}
+    - ${{One}} and ${{Recursive}} somewhere in there
