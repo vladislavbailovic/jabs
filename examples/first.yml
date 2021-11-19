@@ -39,11 +39,6 @@ Macro:
 # A document can also contain just a rule
 Rule:
   Name: root
-  Observes:
-    # Observables are triggered with non-success response
-    - |
-      #!/bin/bash
-      exit 666
   DependsOn:
     - Task zero
     - Another rule
@@ -73,3 +68,22 @@ Rule:
       #!/usr/bin/python
       print("Hello!")
     - echo "----"
+---
+
+Rule:
+  Name: Wants subtask with failing observable
+  DependsOn:
+    - Failing Observable
+  Tasks:
+    - echo "Wants subtask with failing observable"
+---
+
+Rule:
+  Name: Failing Observable
+  Observes:
+    # Observables are triggered with non-success response
+    - |
+      #!/bin/bash
+      exit 666
+  Tasks:
+    - echo "This one won't execute"

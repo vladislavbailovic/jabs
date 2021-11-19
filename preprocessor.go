@@ -14,7 +14,7 @@ type Task string
 
 type Rule struct {
 	Name      string
-	Type      string
+	Observes  []string
 	DependsOn []string // @TODO these should actually be other rules
 	Tasks     []string
 }
@@ -64,10 +64,15 @@ func (p *Preprocessor) initRules(dfns []RuleDefinition) {
 		for _, item := range dfn.DependsOn {
 			dependencies = append(dependencies, p.expand(item))
 		}
+		observes := []string{}
+		for _, obs := range dfn.Observes {
+			observes = append(observes, obs)
+		}
 		name := p.expand(dfn.Name)
 		rules[name] = Rule{
 			Name:      name,
 			DependsOn: dependencies,
+			Observes:  observes,
 			Tasks:     tasks,
 		}
 	}

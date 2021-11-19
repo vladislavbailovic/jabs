@@ -24,7 +24,7 @@ type MacroDefinition struct {
 
 type RuleDefinition struct {
 	Name      string   `yaml:"Name"`
-	Observes  []string `yaml:"Type"`
+	Observes  []string `yaml:"Observes"`
 	DependsOn []string `yaml:"DependsOn"`
 	Tasks     []string `yaml:"Tasks"`
 }
