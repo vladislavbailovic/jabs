@@ -24,8 +24,15 @@ func main() {
 	fmt.Println("--------------------")
 	for _, rl := range stack.stack {
 		fmt.Printf("\t- %s\n", rl.Name)
+		for i, task := range rl.Tasks {
+			cmd := NewExecutable(task)
+			out, err := cmd.Execute()
+			if err != nil {
+				panic(err)
+			}
+			fmt.Printf("\t\t%d) %v\n", i+1, out)
+		}
 	}
 
-	// @TODO prepare proper stack
 	// @TODO execute or compile stack
 }

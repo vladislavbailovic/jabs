@@ -41,8 +41,12 @@ func (p *Preprocessor) initMacros(dfns []MacroDefinition) {
 		}
 		expanded := expandMacroDfns(value, dfns)
 		if dfn.Command != "" {
-			// @TODO this should actually be executed
-			expanded = "/bin/bash -c '" + expanded + "'"
+			cmd := NewExecutable(expanded)
+			out, err := cmd.Execute()
+			if err != nil {
+				panic(err)
+			}
+			expanded = out
 		}
 		macros[dfn.Name] = Macro{Name: dfn.Name, Value: expanded}
 	}

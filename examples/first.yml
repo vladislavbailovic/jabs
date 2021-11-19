@@ -45,7 +45,7 @@ Rule:
     - Another rule
   Tasks:
     - echo ${{Two}}
-    - ${{One}} and ${{Recursive}} somewhere in there
+    - echo '${{One}} and ${{Recursive}} somewhere in there'
 ---
 
 Rule:
@@ -65,4 +65,7 @@ Rule:
 Rule:
   Name: Dependency rule
   Tasks:
+    - |
+      #!/usr/bin/python
+      print("Hello!")
     - echo "----"
