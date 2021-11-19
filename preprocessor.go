@@ -92,6 +92,10 @@ func (p Preprocessor) expand(subj string) string {
 		expanded := false
 		for name, macro := range p.Macros {
 			key := getExpansionKey(name)
+			if strings.Contains(macro.Value, key) {
+				// @TODO warn about recursion
+				continue
+			}
 			expanded = strings.Contains(result, key)
 			if !expanded {
 				continue
@@ -115,7 +119,8 @@ func expandMacroDfns(subj string, in string, dfns []MacroDefinition) string {
 		expanded := false
 		for _, macro := range dfns {
 			if macro.Name == in {
-				continue
+				// @TODO warn about recursion
+				break
 			}
 			key := getExpansionKey(macro.Name)
 			expanded = strings.Contains(result, key)
