@@ -39,6 +39,8 @@ Macro:
 # A document can also contain just a rule
 Rule:
   Name: root
+  Observes:
+    - test `stat --format %Y examples/first.yml` -ge $(( `date +'%s'` - 10 )) || exit 1
   DependsOn:
     - Task zero
     - Another rule
