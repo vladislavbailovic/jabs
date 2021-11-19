@@ -21,7 +21,7 @@ Macro:
   Name: One
   Command: |
     #!/bin/bash
-    date +'%F %J'
+    date +'%F %T'
 ---
 
 # Macro can have fixed value
