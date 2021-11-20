@@ -2,7 +2,13 @@ package main
 
 import (
 	"fmt"
+	"strings"
 	"time"
+)
+
+const (
+	MACRO_OPEN  string = "${{"
+	MACRO_CLOSE string = "}}"
 )
 
 func GetSystemMacroDefinitions() []MacroDefinition {
@@ -15,5 +21,9 @@ func GetSystemMacroDefinitions() []MacroDefinition {
 }
 
 func GetExpansionKey(what string) string {
-	return fmt.Sprintf("${{%s}}", what)
+	return MACRO_OPEN + what + MACRO_CLOSE
+}
+
+func ContainsMacros(subject string) bool {
+	return strings.Contains(subject, MACRO_OPEN)
 }

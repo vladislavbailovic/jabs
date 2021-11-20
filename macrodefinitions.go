@@ -30,7 +30,6 @@ func (md *MacroDefinitions) preprocess() int {
 		md.convertShellcode()
 		currentCount := len(md.Dfns)
 		if initialCount == currentCount && currentCount > 0 {
-			// We've done nothing
 			Warning("Some macro definitions could not be expanded: (%d)", currentCount)
 			Debug("--------------------")
 			for idx, dfn := range md.Dfns {
@@ -55,7 +54,7 @@ func (md *MacroDefinitions) convertSimple() {
 			if "" == value {
 				value = dfn.Command
 			}
-			if containsMacros(value) {
+			if ContainsMacros(value) {
 				continue
 			}
 			if "" == value {
@@ -83,7 +82,7 @@ func (md *MacroDefinitions) convertValue() {
 
 			// We've already preprocessed this definition entirely
 			// Add it as a macro and remove definition
-			if !containsMacros(md.Dfns[idx].Value) {
+			if !ContainsMacros(md.Dfns[idx].Value) {
 				Debug("Processed dfn '%s' by value, adding it as a macro", dfn.Name)
 				md.Macros[dfn.Name] = Macro{dfn.Name, dfn.Value}
 				md.Dfns = append(md.Dfns[:idx], md.Dfns[idx+1:]...)
@@ -99,7 +98,7 @@ func (md *MacroDefinitions) convertValue() {
 
 			// We've already preprocessed this definition entirely
 			// Add it as a macro and remove definition
-			if !containsMacros(md.Dfns[idx].Value) {
+			if !ContainsMacros(md.Dfns[idx].Value) {
 				Debug("Processed dfn '%s' by value, adding it as a macro", dfn.Name)
 				md.Macros[dfn.Name] = Macro{dfn.Name, dfn.Value}
 				md.Dfns = append(md.Dfns[:idx], md.Dfns[idx+1:]...)
@@ -120,7 +119,7 @@ func (md *MacroDefinitions) convertShellcode() {
 
 			// We've already preprocessed this definition entirely
 			// Add it as a macro and remove definition
-			if !containsMacros(md.Dfns[idx].Command) {
+			if !ContainsMacros(md.Dfns[idx].Command) {
 				Debug("Processed dfn '%s' by cmd, adding it as a macro", dfn.Name)
 				md.Macros[dfn.Name] = Macro{dfn.Name, execute(md.Dfns[idx].Command)}
 				md.Dfns = append(md.Dfns[:idx], md.Dfns[idx+1:]...)
@@ -139,7 +138,7 @@ func (md *MacroDefinitions) convertShellcode() {
 
 			// We've already preprocessed this definition entirely
 			// Add it as a macro and remove definition
-			if !containsMacros(md.Dfns[idx].Command) {
+			if !ContainsMacros(md.Dfns[idx].Command) {
 				Debug("Processed dfn '%s' by cmd, adding it as a macro", dfn.Name)
 				md.Macros[dfn.Name] = Macro{dfn.Name, execute(md.Dfns[idx].Command)}
 				md.Dfns = append(md.Dfns[:idx], md.Dfns[idx+1:]...)
@@ -147,10 +146,6 @@ func (md *MacroDefinitions) convertShellcode() {
 			}
 		}
 	}
-}
-
-func containsMacros(where string) bool {
-	return strings.Contains(where, "${{")
 }
 
 func execute(what string) string {

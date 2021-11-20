@@ -6,8 +6,8 @@ import (
 )
 
 func main() {
-	p := NewPreprocessor("./examples/first.yml")
-	es := NewEvaluationStack("root", p.Rules)
+	p := NewPreprocessor("./examples/self.yml")
+	es := NewEvaluationStack("cover:html", p.Rules)
 	printStack(es)
 }
 
