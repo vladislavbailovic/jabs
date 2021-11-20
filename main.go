@@ -7,8 +7,11 @@ import (
 )
 
 func main() {
-	ctx := context.WithValue(context.Background(), OPT_VERBOSITY, int(LOG_INFO))
+	ctx := ApplyEnvironment(context.Background())
+
+	//ctx = context.WithValue(ctx, OPT_VERBOSITY, int(LOG_INFO))
 	InitOptions(ctx)
+
 	p := NewPreprocessor("./examples/self.yml")
 	es := NewEvaluationStack("cover:html", p.Rules)
 	printStack(es)
