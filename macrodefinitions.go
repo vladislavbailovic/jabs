@@ -31,7 +31,12 @@ func (md *MacroDefinitions) preprocess() int {
 		currentCount := len(md.Dfns)
 		if initialCount == currentCount && currentCount > 0 {
 			// We've done nothing
-			// @TODO we have unexpanded macros - might wanna warn
+			Warning("Some macro definitions could not be expanded: (%d)", currentCount)
+			Debug("--------------------")
+			for idx, dfn := range md.Dfns {
+				Debug("\t%d) %s", idx, dfn.Name)
+			}
+			Debug("--------------------")
 			break
 		}
 	}

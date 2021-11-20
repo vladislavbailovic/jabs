@@ -41,7 +41,7 @@ func Notice(msg string, args ...interface{}) {
 }
 
 func Warning(msg string, args ...interface{}) {
-	Log(LOG_NOTICE, fmt.Sprintf(msg, args...))
+	Log(LOG_WARNING, fmt.Sprintf(msg, args...))
 }
 
 func Error(msg string, args ...interface{}) {
