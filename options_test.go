@@ -11,10 +11,10 @@ func Test_Options(t *testing.T) {
 	ctx = context.WithValue(ctx, OPT_ROOT, "root")
 
 	ctx1 := context.WithValue(ctx, OPT_PATH, "./examples/first.yml")
-	opts1 := NewOptions(ctx1)
+	opts1 := InitOptions(ctx1)
 
 	ctx2 := context.WithValue(ctx, OPT_PATH, "./examples/self.yml")
-	opts2 := NewOptions(ctx2)
+	opts2 := InitOptions(ctx2)
 	if opts1.Path != opts2.Path {
 		t.Fatalf("Options will only be loaded once")
 	}
@@ -23,7 +23,7 @@ func Test_Options(t *testing.T) {
 
 func Test_Options_Defaults(t *testing.T) {
 	ctx := context.TODO()
-	opts := NewOptions(ctx)
+	opts := InitOptions(ctx)
 
 	if "" != opts.Root {
 		t.Fatalf("defaults are not yet implemented")

@@ -44,7 +44,7 @@ func getInt(ctx context.Context, key OptionKey) int {
 	return val.(int)
 }
 
-func NewOptions(ctx context.Context) Options {
+func InitOptions(ctx context.Context) Options {
 	if (Options{}) != _options {
 		return _options
 	}
@@ -60,7 +60,7 @@ func NewOptions(ctx context.Context) Options {
 
 func GetOptions() Options {
 	if (Options{}) == _options {
-		return NewOptions(context.TODO())
+		return InitOptions(context.TODO())
 	}
 	return _options
 }

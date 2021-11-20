@@ -1,11 +1,14 @@
 package main
 
 import (
+	"context"
 	"fmt"
 	"strings"
 )
 
 func main() {
+	ctx := context.WithValue(context.Background(), OPT_VERBOSITY, int(LOG_INFO))
+	InitOptions(ctx)
 	p := NewPreprocessor("./examples/self.yml")
 	es := NewEvaluationStack("cover:html", p.Rules)
 	printStack(es)
