@@ -7,7 +7,7 @@ import (
 
 func Test_Preprocessor(t *testing.T) {
 	p := NewPreprocessor("./examples/first.yml")
-	expectedMacros := 7
+	expectedMacros := 4
 	actualMacros := 0
 	for name, macro := range p.Macros {
 		if len(macro.Value) > 100 {

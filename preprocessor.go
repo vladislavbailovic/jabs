@@ -39,26 +39,8 @@ func NewPreprocessor(file string) Preprocessor {
 }
 
 func (p *Preprocessor) initMacros(dfns []MacroDefinition) {
-	macros := map[string]Macro{}
-	dfns = append(GetSystemMacroDefinitions(), dfns...)
-	for _, dfn := range dfns {
-		value := dfn.Value
-		if "" == value {
-			value = dfn.Command
-		}
-		expanded := expandMacroDfns(value, dfn.Name, dfns)
-		if dfn.Command != "" {
-			cmd := NewExecutable(expanded)
-			out, err := cmd.Execute()
-			if err != nil {
-				fmt.Printf("ERROR: unable to run command %s for %s\n", expanded, dfn.Name)
-				panic(err)
-			}
-			expanded = out
-		}
-		macros[dfn.Name] = Macro{Name: dfn.Name, Value: expanded}
-	}
-	p.Macros = macros
+	mds := NewMacroDefinitions(dfns)
+	p.Macros = mds.Macros
 }
 
 func (p *Preprocessor) initRules(dfns []RuleDefinition) {
@@ -112,61 +94,4 @@ func (p Preprocessor) expand(subj string) string {
 
 func getExpansionKey(what string) string {
 	return fmt.Sprintf("${{%s}}", what)
-}
-
-func expandMacroDfns(subj string, in string, dfns []MacroDefinition) string {
-	result := subj
-	for i := Limit(0); i < LIMIT_MACRO_EXPANSION_PASS; i++ {
-		expanded := false
-		for _, macro := range dfns {
-			if macro.Name == in {
-				// @TODO warn about recursion
-				continue
-			}
-			value := macro.Value
-			if "" == value {
-				continue
-			}
-			key := getExpansionKey(macro.Name)
-			if !strings.Contains(result, key) {
-				continue
-			}
-			expanded = expanded || strings.Contains(result, key)
-			result = strings.Replace(result, key, value, -1)
-		}
-		if !expanded {
-			break
-		}
-	}
-	for i := Limit(0); i < LIMIT_MACRO_EXPANSION_PASS; i++ {
-		expanded := false
-		for _, macro := range dfns {
-			if macro.Name == in {
-				// @TODO warn about recursion
-				continue
-			}
-			value := macro.Command
-			if "" == value {
-				continue
-			}
-			key := getExpansionKey(macro.Name)
-			expanded = expanded || strings.Contains(result, key)
-			if !strings.Contains(result, key) {
-				continue
-			}
-			// @TODO: Value/Command expansion race condition!!!
-			fmt.Println("executing", value)
-			cmd := NewExecutable(value)
-			out, err := cmd.Execute()
-			if err != nil {
-				fmt.Printf("ERROR: unable to run command %s for %s\n", macro.Command, macro.Name)
-				panic(err)
-			}
-			result = strings.Replace(result, key, out, -1)
-		}
-		if !expanded {
-			break
-		}
-	}
-	return result
 }
