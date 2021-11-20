@@ -1,7 +1,6 @@
 package main
 
 import (
-	"fmt"
 	"testing"
 )
 
@@ -16,12 +15,12 @@ func Test_Preprocessor(t *testing.T) {
 		actualMacros += 1
 	}
 	if expectedMacros != actualMacros {
-		fmt.Println("Macros")
-		fmt.Println("--------------------")
+		Debug("Macros")
+		Debug("--------------------")
 		for name, _ := range p.Macros {
-			fmt.Printf("%s\n", name)
+			Debug("%s", name)
 		}
-		fmt.Println("--------------------")
+		Debug("--------------------")
 		t.Fatalf("expected %d macros, but got %d instead", expectedMacros, actualMacros)
 	}
 }

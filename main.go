@@ -19,37 +19,37 @@ func main() {
 		}
 		out = append(out, "")
 	}
-	fmt.Println(strings.Join(out[:], "\n"))
+	Info("\n" + strings.Join(out[:], "\n"))
 }
 
 // Kinda execute
 // func main() {
 // 	p := NewPreprocessor("./examples/first.yml")
 
-// 	fmt.Println("Macros")
-// 	fmt.Println("--------------------")
+// 	Debug("Macros")
+// 	Debug("--------------------")
 // 	for name, value := range p.Macros {
-// 		fmt.Printf("\t- ${{%s}}: [%v]\n", name, value)
+// 		Debug("\t- ${{%s}}: [%v]", name, value)
 // 	}
 
-// 	fmt.Println("Rules")
-// 	fmt.Println("--------------------")
+// 	Debug("Rules")
+// 	Debug("--------------------")
 // 	for name, rule := range p.Rules {
-// 		fmt.Printf("\t- %s: %v\n", name, rule)
+// 		Debug("\t- %s: %v", name, rule)
 // 	}
 
 // 	stack := NewEvaluationStack("root", p.Rules)
-// 	fmt.Println("Stack")
-// 	fmt.Println("--------------------")
+// 	Debug("Stack")
+// 	Debug("--------------------")
 // 	for _, rl := range stack.stack {
-// 		fmt.Printf("\t- %s\n", rl.Name)
+// 		Debug("\t- %s", rl.Name)
 // 		for i, task := range rl.Tasks {
 // 			cmd := NewExecutable(task)
 // 			out, err := cmd.Execute()
 // 			if err != nil {
 // 				panic(err)
 // 			}
-// 			fmt.Printf("\t\t%d) %v\n", i+1, out)
+// 			Debug("\t\t%d) %v", i+1, out)
 // 		}
 // 	}
 

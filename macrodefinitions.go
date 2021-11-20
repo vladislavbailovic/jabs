@@ -1,7 +1,6 @@
 package main
 
 import (
-	"fmt"
 	"strings"
 )
 
@@ -57,7 +56,7 @@ func (md *MacroDefinitions) convertSimple() {
 			if "" == value {
 				value = execute(value)
 			}
-			fmt.Printf("Processed any dfn '%s' fully, adding it as a macro\n", dfn.Name)
+			Debug("Processed any dfn '%s' fully, adding it as a macro", dfn.Name)
 			md.Macros[dfn.Name] = Macro{dfn.Name, value}
 			md.Dfns = append(md.Dfns[:idx], md.Dfns[idx+1:]...)
 			break
@@ -80,7 +79,7 @@ func (md *MacroDefinitions) convertValue() {
 			// We've already preprocessed this definition entirely
 			// Add it as a macro and remove definition
 			if !containsMacros(md.Dfns[idx].Value) {
-				fmt.Printf("Processed dfn '%s' by value, adding it as a macro\n", dfn.Name)
+				Debug("Processed dfn '%s' by value, adding it as a macro", dfn.Name)
 				md.Macros[dfn.Name] = Macro{dfn.Name, dfn.Value}
 				md.Dfns = append(md.Dfns[:idx], md.Dfns[idx+1:]...)
 				break
@@ -96,7 +95,7 @@ func (md *MacroDefinitions) convertValue() {
 			// We've already preprocessed this definition entirely
 			// Add it as a macro and remove definition
 			if !containsMacros(md.Dfns[idx].Value) {
-				fmt.Printf("Processed dfn '%s' by value, adding it as a macro\n", dfn.Name)
+				Debug("Processed dfn '%s' by value, adding it as a macro", dfn.Name)
 				md.Macros[dfn.Name] = Macro{dfn.Name, dfn.Value}
 				md.Dfns = append(md.Dfns[:idx], md.Dfns[idx+1:]...)
 				break
@@ -112,12 +111,12 @@ func (md *MacroDefinitions) convertShellcode() {
 			if "" == dfn.Command {
 				continue
 			}
-			fmt.Println("\tchecking command", dfn.Name)
+			Debug("\tchecking command %s", dfn.Name)
 
 			// We've already preprocessed this definition entirely
 			// Add it as a macro and remove definition
 			if !containsMacros(md.Dfns[idx].Command) {
-				fmt.Printf("Processed dfn '%s' by cmd, adding it as a macro\n", dfn.Name)
+				Debug("Processed dfn '%s' by cmd, adding it as a macro", dfn.Name)
 				md.Macros[dfn.Name] = Macro{dfn.Name, execute(md.Dfns[idx].Command)}
 				md.Dfns = append(md.Dfns[:idx], md.Dfns[idx+1:]...)
 				break
@@ -125,18 +124,18 @@ func (md *MacroDefinitions) convertShellcode() {
 
 			key := getExpansionKey(macro.Name)
 			if !strings.Contains(dfn.Command, key) {
-				fmt.Println("\t\tcommand does not have", key)
+				Debug("\t\tcommand does not have %s", key)
 				continue
 			}
-			fmt.Println("\t\tcommand DOES have", key, "processing")
+			Debug("\t\tcommand DOES have %s, processing", key)
 
 			md.Dfns[idx].Command = strings.Replace(dfn.Command, key, macro.Value, -1)
-			fmt.Println("\t\tresult", md.Dfns[idx].Command)
+			Debug("\t\tresult: %s", md.Dfns[idx].Command)
 
 			// We've already preprocessed this definition entirely
 			// Add it as a macro and remove definition
 			if !containsMacros(md.Dfns[idx].Command) {
-				fmt.Printf("Processed dfn '%s' by cmd, adding it as a macro\n", dfn.Name)
+				Debug("Processed dfn '%s' by cmd, adding it as a macro", dfn.Name)
 				md.Macros[dfn.Name] = Macro{dfn.Name, execute(md.Dfns[idx].Command)}
 				md.Dfns = append(md.Dfns[:idx], md.Dfns[idx+1:]...)
 				break
@@ -153,7 +152,7 @@ func execute(what string) string {
 	cmd := NewExecutable(what)
 	out, err := cmd.Execute()
 	if err != nil {
-		fmt.Printf("ERROR: unable to run command %s\n", what)
+		Debug("ERROR: unable to run command %s", what)
 		panic(err)
 	}
 	return out

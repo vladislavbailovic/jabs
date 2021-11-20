@@ -2,7 +2,6 @@ package main
 
 import (
 	"bytes"
-	"fmt"
 	"io"
 	"io/ioutil"
 
@@ -53,7 +52,7 @@ func parseMacros(data []byte) []MacroDefinition {
 		err := dcd.Decode(&instance)
 		if err != nil {
 			if err != io.EOF {
-				fmt.Printf("error: %v\n", err)
+				Warning("error: %v", err)
 			}
 			break
 		}
@@ -74,7 +73,7 @@ func parseRules(data []byte) []RuleDefinition {
 		err := dcd.Decode(&instance)
 		if err != nil {
 			if err != io.EOF {
-				fmt.Printf("error: %v\n", err)
+				Warning("error: %v", err)
 			}
 			break
 		}
