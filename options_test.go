@@ -6,7 +6,7 @@ import (
 )
 
 func Test_Options(t *testing.T) {
-	ctx := context.Background()
+	ctx := context.TODO()
 	ctx = context.WithValue(ctx, OPT_WATCH, true)
 	ctx = context.WithValue(ctx, OPT_ROOT, "root")
 
@@ -18,4 +18,15 @@ func Test_Options(t *testing.T) {
 	if opts1.Path != opts2.Path {
 		t.Fatalf("Options will only be loaded once")
 	}
+	resetOptions()
+}
+
+func Test_Options_Defaults(t *testing.T) {
+	ctx := context.TODO()
+	opts := NewOptions(ctx)
+
+	if "" != opts.Root {
+		t.Fatalf("defaults are not yet implemented")
+	}
+	resetOptions()
 }
