@@ -5,6 +5,8 @@ Just Another Build System
 TODO
 ----
 
+- [ ] Options
+- [ ] Exec time tracking
 - [ ] CLI runner
 - [ ] Project monitoring
 - [ ] Multi-file definitions
