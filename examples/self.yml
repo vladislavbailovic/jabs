@@ -5,6 +5,11 @@ Macro:
 ---
 
 Macro:
+  Name: UntestedGofiles
+  Command: find . -name '*.go' -newermt './coverage.out' -print0 | tr '\0' ' '
+---
+
+Macro:
   Name: Outfile
   Value: ./jabs
 ---
@@ -26,3 +31,32 @@ Rule:
     - test -z "${{ChangedGofiles}}" || exit 1
   Tasks:
     - go build .
+---
+
+Rule:
+  Name: test
+  Observes:
+    - test -z "${{UntestedGofiles}}" || exit 1
+  Tasks:
+    - go test ./...
+---
+
+Rule:
+  Name: cover
+  Observes:
+    - test -f ./coverage.out || exit 1
+    - test -z "${{UntestedGofiles}}" || exit 1
+  DependsOn:
+    - test
+  Tasks:
+    - go test ./... -coverprofile=coverage.out
+---
+
+Rule:
+  Name: cover:html
+  Observes:
+    - test -z "${{UntestedGofiles}}" || exit 1
+  DependsOn:
+    - cover
+  Tasks:
+    - go tool cover -html=coverage.out

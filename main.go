@@ -8,7 +8,7 @@ import (
 // Kinda print
 func main() {
 	p := NewPreprocessor("./examples/self.yml")
-	es := NewEvaluationStack("build", p.Rules)
+	es := NewEvaluationStack("cover:html", p.Rules)
 	out := []string{"#!/bin/bash", ""}
 
 	for idx, rule := range es.stack {
