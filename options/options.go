@@ -1,6 +1,9 @@
-package main
+package options
 
-import "context"
+import (
+	"context"
+	"jabs/types"
+)
 
 type OptionKey int
 
@@ -15,7 +18,7 @@ type Options struct {
 	Watch     bool
 	Root      string
 	Path      string
-	Verbosity LogLevel
+	Verbosity types.LogLevel
 }
 
 var _options Options
@@ -53,7 +56,7 @@ func InitOptions(ctx context.Context) Options {
 		Watch:     getBoolean(ctx, OPT_WATCH),
 		Root:      getString(ctx, OPT_ROOT),
 		Path:      getString(ctx, OPT_PATH),
-		Verbosity: LogLevel(getInt(ctx, OPT_VERBOSITY)),
+		Verbosity: types.LogLevel(getInt(ctx, OPT_VERBOSITY)),
 	}
 	return _options
 }

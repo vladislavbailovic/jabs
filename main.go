@@ -3,6 +3,8 @@ package main
 import (
 	"context"
 	"fmt"
+	"jabs/dbg"
+	"jabs/options"
 	"strings"
 )
 
@@ -10,7 +12,7 @@ func main() {
 	ctx := ApplyEnvironment(context.Background())
 
 	//ctx = context.WithValue(ctx, OPT_VERBOSITY, int(LOG_INFO))
-	InitOptions(ctx)
+	options.InitOptions(ctx)
 
 	p := NewPreprocessor("./examples/self.yml")
 	es := NewEvaluationStack("cover:html", p.Rules)
@@ -28,21 +30,21 @@ func printStack(es EvaluationStack) {
 		}
 		out = append(out, "")
 	}
-	Info("\n" + strings.Join(out[:], "\n"))
+	dbg.Info("\n" + strings.Join(out[:], "\n"))
 }
 
 func executeStack(es EvaluationStack) {
-	Debug("Stack")
-	Debug("--------------------")
+	dbg.Debug("Stack")
+	dbg.Debug("--------------------")
 	for _, rl := range es.stack {
-		Debug("\t- %s", rl.Name)
+		dbg.Debug("\t- %s", rl.Name)
 		for i, task := range rl.Tasks {
 			cmd := NewExecutable(task)
 			out, err := cmd.Execute()
 			if err != nil {
-				Error("%v", err)
+				dbg.Error("%v", err)
 			}
-			Debug("\t\t%d) %v", i+1, out)
+			dbg.Debug("\t\t%d) %v", i+1, out)
 		}
 	}
 }

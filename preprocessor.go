@@ -1,6 +1,7 @@
 package main
 
 import (
+	"jabs/dbg"
 	"strings"
 )
 
@@ -75,7 +76,7 @@ func (p Preprocessor) expand(subj string) string {
 		for name, macro := range p.Macros {
 			key := GetExpansionKey(name)
 			if strings.Contains(macro.Value, key) {
-				Warning("Direct recursion encountered for %s", key)
+				dbg.Warning("Direct recursion encountered for %s", key)
 				continue
 			}
 			expanded = strings.Contains(result, key)

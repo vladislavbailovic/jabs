@@ -1,6 +1,7 @@
 package main
 
 import (
+	"jabs/dbg"
 	"testing"
 )
 
@@ -15,12 +16,12 @@ func Test_Preprocessor(t *testing.T) {
 		actualMacros += 1
 	}
 	if expectedMacros != actualMacros {
-		Debug("Macros")
-		Debug("--------------------")
+		dbg.Debug("Macros")
+		dbg.Debug("--------------------")
 		for name, _ := range p.Macros {
-			Debug("%s", name)
+			dbg.Debug("%s", name)
 		}
-		Debug("--------------------")
+		dbg.Debug("--------------------")
 		t.Fatalf("expected %d macros, but got %d instead", expectedMacros, actualMacros)
 	}
 }

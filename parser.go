@@ -4,6 +4,7 @@ import (
 	"bytes"
 	"io"
 	"io/ioutil"
+	"jabs/dbg"
 
 	"gopkg.in/yaml.v2"
 )
@@ -36,7 +37,7 @@ type Parser struct {
 func NewParser(file string) Parser {
 	data, err := ioutil.ReadFile(file)
 	if err != nil {
-		Error("Can't read file: %s [%v]", file, err)
+		dbg.Error("Can't read file: %s [%v]", file, err)
 	}
 	return Parser{
 		MacroDefinitions: parseMacros(data),
@@ -52,7 +53,7 @@ func parseMacros(data []byte) []MacroDefinition {
 		err := dcd.Decode(&instance)
 		if err != nil {
 			if err != io.EOF {
-				Warning("error: %v", err)
+				dbg.Warning("error: %v", err)
 			}
 			break
 		}
@@ -73,7 +74,7 @@ func parseRules(data []byte) []RuleDefinition {
 		err := dcd.Decode(&instance)
 		if err != nil {
 			if err != io.EOF {
-				Warning("error: %v", err)
+				dbg.Warning("error: %v", err)
 			}
 			break
 		}

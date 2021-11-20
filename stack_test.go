@@ -1,6 +1,7 @@
 package main
 
 import (
+	"jabs/dbg"
 	"testing"
 )
 
@@ -9,12 +10,12 @@ func Test_EvaluationStack_Dependent(t *testing.T) {
 	es := NewEvaluationStack("root", p.Rules)
 	expectedRules := 4
 	if len(es.stack) != expectedRules {
-		Debug("Stack")
-		Debug("--------------------")
+		dbg.Debug("Stack")
+		dbg.Debug("--------------------")
 		for _, rl := range es.stack {
-			Debug("\t- %s", rl.Name)
+			dbg.Debug("\t- %s", rl.Name)
 		}
-		Debug("--------------------")
+		dbg.Debug("--------------------")
 		t.Fatalf("expected %d rules, but got %d", expectedRules, len(es.stack))
 	}
 }
@@ -24,12 +25,12 @@ func Test_EvaluationStack_Standalone(t *testing.T) {
 	es := NewEvaluationStack("Standalone rule", p.Rules)
 	expectedRules := 1
 	if len(es.stack) != expectedRules {
-		Debug("Stack")
-		Debug("--------------------")
+		dbg.Debug("Stack")
+		dbg.Debug("--------------------")
 		for _, rl := range es.stack {
-			Debug("\t- %s", rl.Name)
+			dbg.Debug("\t- %s", rl.Name)
 		}
-		Debug("--------------------")
+		dbg.Debug("--------------------")
 		t.Fatalf("expected %d rules, but got %d", expectedRules, len(es.stack))
 	}
 }
@@ -39,12 +40,12 @@ func Test_EvaluationStack_Observable(t *testing.T) {
 	es := NewEvaluationStack("Wants subtask with failing observable", p.Rules)
 	expectedRules := 2
 	if len(es.stack) != expectedRules {
-		Debug("Stack")
-		Debug("--------------------")
+		dbg.Debug("Stack")
+		dbg.Debug("--------------------")
 		for _, rl := range es.stack {
-			Debug("\t- %s", rl.Name)
+			dbg.Debug("\t- %s", rl.Name)
 		}
-		Debug("--------------------")
+		dbg.Debug("--------------------")
 		t.Fatalf("expected %d rules, but got %d", expectedRules, len(es.stack))
 	}
 }
