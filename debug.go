@@ -24,6 +24,10 @@ var levelNames = map[LogLevel]string{
 }
 
 func Log(lvl LogLevel, msg string) {
+	opts := GetOptions()
+	if lvl < opts.Verbosity {
+		return
+	}
 	fmt.Printf("[%s] %s\n",
 		levelNames[lvl], msg)
 }
