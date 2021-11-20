@@ -47,7 +47,7 @@ func main() {
 // 			cmd := NewExecutable(task)
 // 			out, err := cmd.Execute()
 // 			if err != nil {
-// 				panic(err)
+// 				Error("%v", err)
 // 			}
 // 			Debug("\t\t%d) %v", i+1, out)
 // 		}

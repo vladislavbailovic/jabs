@@ -36,7 +36,7 @@ type Parser struct {
 func NewParser(file string) Parser {
 	data, err := ioutil.ReadFile(file)
 	if err != nil {
-		panic("Can't read file: " + file)
+		Error("Can't read file: %s [%v]", file, err)
 	}
 	return Parser{
 		MacroDefinitions: parseMacros(data),

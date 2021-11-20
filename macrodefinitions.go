@@ -152,8 +152,7 @@ func execute(what string) string {
 	cmd := NewExecutable(what)
 	out, err := cmd.Execute()
 	if err != nil {
-		Debug("ERROR: unable to run command %s", what)
-		panic(err)
+		Error("Unable to run command %s: %v", what, err)
 	}
 	return out
 }

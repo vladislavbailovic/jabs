@@ -1,6 +1,9 @@
 package main
 
-import "fmt"
+import (
+	"fmt"
+	"os"
+)
 
 type LogLevel int
 
@@ -43,4 +46,5 @@ func Warning(msg string, args ...interface{}) {
 
 func Error(msg string, args ...interface{}) {
 	Log(LOG_ERROR, fmt.Sprintf(msg, args...))
+	os.Exit(1)
 }

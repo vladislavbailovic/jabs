@@ -19,7 +19,7 @@ func (es *EvaluationStack) init() {
 func (es *EvaluationStack) getSubstack(root string, stack []Rule) []Rule {
 	rule, ok := es.rules[root]
 	if !ok {
-		panic("No such rule: " + root)
+		Error("No such rule: %s", root)
 	}
 
 	// Test rule observables state - should we even consider this rule?
