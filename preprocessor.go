@@ -1,7 +1,6 @@
 package main
 
 import (
-	"fmt"
 	"strings"
 )
 
@@ -74,7 +73,7 @@ func (p Preprocessor) expand(subj string) string {
 	for i := Limit(0); i < LIMIT_MACRO_EXPANSION_PASS; i++ {
 		expanded := false
 		for name, macro := range p.Macros {
-			key := getExpansionKey(name)
+			key := GetExpansionKey(name)
 			if strings.Contains(macro.Value, key) {
 				// @TODO warn about recursion
 				continue
@@ -90,8 +89,4 @@ func (p Preprocessor) expand(subj string) string {
 		}
 	}
 	return result
-}
-
-func getExpansionKey(what string) string {
-	return fmt.Sprintf("${{%s}}", what)
 }

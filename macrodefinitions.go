@@ -85,7 +85,7 @@ func (md *MacroDefinitions) convertValue() {
 				break
 			}
 
-			key := getExpansionKey(macro.Name)
+			key := GetExpansionKey(macro.Name)
 			if !strings.Contains(dfn.Value, key) {
 				continue
 			}
@@ -122,7 +122,7 @@ func (md *MacroDefinitions) convertShellcode() {
 				break
 			}
 
-			key := getExpansionKey(macro.Name)
+			key := GetExpansionKey(macro.Name)
 			if !strings.Contains(dfn.Command, key) {
 				Debug("\t\tcommand does not have %s", key)
 				continue

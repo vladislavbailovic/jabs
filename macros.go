@@ -13,3 +13,7 @@ func GetSystemMacroDefinitions() []MacroDefinition {
 	}
 	return sys
 }
+
+func GetExpansionKey(what string) string {
+	return fmt.Sprintf("${{%s}}", what)
+}
