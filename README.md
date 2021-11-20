@@ -5,8 +5,6 @@ Just Another Build System
 TODO
 ----
 
-- [ ] Message logging
-- [ ] Execution vs output
 - [ ] CLI runner
 - [ ] Project monitoring
 - [ ] Multi-file definitions
@@ -23,3 +21,5 @@ Feature list
 	- Can depend on other rules
 	- Can be conditionally executed by observing shellcommand status: non-zero exit code triggers the rule execution
 	- Can have series of tasks as shellcommands
+- Logging with levels
+- Tasks can be either printed in shell script compatible way, or executed
