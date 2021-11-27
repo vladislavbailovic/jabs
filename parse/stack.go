@@ -1,4 +1,4 @@
-package main
+package parse
 
 import "jabs/dbg"
 
@@ -16,6 +16,10 @@ func NewEvaluationStack(root string, rules map[string]Rule) EvaluationStack {
 
 func (es *EvaluationStack) init() {
 	es.stack = es.getSubstack(es.root, []Rule{})
+}
+
+func (es EvaluationStack) GetStack() []Rule {
+	return es.stack
 }
 
 func (es *EvaluationStack) getSubstack(root string, stack []Rule) []Rule {

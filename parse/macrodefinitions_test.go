@@ -1,4 +1,4 @@
-package main
+package parse
 
 import (
 	"jabs/dbg"
@@ -6,7 +6,7 @@ import (
 )
 
 func Test_MacroDefinitions_First(t *testing.T) {
-	p := NewParser("./examples/first.yml")
+	p := NewParser("../examples/first.yml")
 	dfns := NewMacroDefinitions(p.MacroDefinitions)
 
 	if len(dfns.Dfns) > 1 {
@@ -29,7 +29,7 @@ func Test_MacroDefinitions_First(t *testing.T) {
 }
 
 func Test_MacroDefinitions_Self(t *testing.T) {
-	p := NewParser("./examples/self.yml")
+	p := NewParser("../examples/self.yml")
 	dfns := NewMacroDefinitions(p.MacroDefinitions)
 
 	if len(dfns.Dfns) > 0 {

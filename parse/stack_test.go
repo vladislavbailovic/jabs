@@ -1,4 +1,4 @@
-package main
+package parse
 
 import (
 	"jabs/dbg"
@@ -6,7 +6,7 @@ import (
 )
 
 func Test_EvaluationStack_Dependent(t *testing.T) {
-	p := NewPreprocessor("./examples/first.yml")
+	p := NewPreprocessor("../examples/first.yml")
 	es := NewEvaluationStack("root", p.Rules)
 	expectedRules := 4
 	if len(es.stack) != expectedRules {
@@ -21,7 +21,7 @@ func Test_EvaluationStack_Dependent(t *testing.T) {
 }
 
 func Test_EvaluationStack_Standalone(t *testing.T) {
-	p := NewPreprocessor("./examples/first.yml")
+	p := NewPreprocessor("../examples/first.yml")
 	es := NewEvaluationStack("Standalone rule", p.Rules)
 	expectedRules := 1
 	if len(es.stack) != expectedRules {
@@ -36,7 +36,7 @@ func Test_EvaluationStack_Standalone(t *testing.T) {
 }
 
 func Test_EvaluationStack_Observable(t *testing.T) {
-	p := NewPreprocessor("./examples/first.yml")
+	p := NewPreprocessor("../examples/first.yml")
 	es := NewEvaluationStack("Wants subtask with failing observable", p.Rules)
 	expectedRules := 2
 	if len(es.stack) != expectedRules {

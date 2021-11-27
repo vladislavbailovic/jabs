@@ -1,4 +1,4 @@
-package main
+package parse
 
 import (
 	"jabs/dbg"
@@ -6,7 +6,7 @@ import (
 )
 
 func Test_Parser(t *testing.T) {
-	p := NewParser("./examples/first.yml")
+	p := NewParser("../examples/first.yml")
 	expectedMacroDfns := 5
 	expectedRuleDfns := 7
 	if len(p.MacroDefinitions) != expectedMacroDfns {
