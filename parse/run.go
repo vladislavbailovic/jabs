@@ -4,23 +4,11 @@ import (
 	"fmt"
 	"io/ioutil"
 	"jabs/dbg"
+	"jabs/types"
 	"os"
 	"os/exec"
 	"strings"
 )
-
-type Executable interface {
-	Execute() (string, error)
-}
-
-type Scriptable interface {
-	GetScript() string
-}
-
-type Runnable interface {
-	Executable
-	Scriptable
-}
 
 type Command struct {
 	source string
@@ -34,7 +22,7 @@ type Scriptlet struct {
 	Command
 }
 
-func NewRunnable(cmd string) Runnable {
+func NewRunnable(cmd string) types.Runnable {
 	command := Command{cmd}
 	if len(strings.Split(cmd, "\n")) > 1 {
 		return &Scriptlet{command}
@@ -42,12 +30,12 @@ func NewRunnable(cmd string) Runnable {
 	return &Cmdlet{command}
 }
 
-func NewExecutable(cmd string) Executable {
-	return NewRunnable(cmd).(Executable)
+func NewExecutable(cmd string) types.Executable {
+	return NewRunnable(cmd).(types.Executable)
 }
 
-func NewScriptable(cmd string) Scriptable {
-	return NewRunnable(cmd).(Scriptable)
+func NewScriptable(cmd string) types.Scriptable {
+	return NewRunnable(cmd).(types.Scriptable)
 }
 
 func (c *Cmdlet) Execute() (string, error) {

@@ -2,6 +2,7 @@ package parse
 
 import (
 	"jabs/dbg"
+	"jabs/types"
 	"strings"
 )
 
@@ -22,7 +23,7 @@ type Rule struct {
 	Name      string
 	Observes  []string
 	DependsOn []string
-	Tasks     []Runnable
+	Tasks     []types.Runnable
 }
 
 type Preprocessor struct {
@@ -46,7 +47,7 @@ func (p *Preprocessor) initMacros(dfns []MacroDefinition) {
 func (p *Preprocessor) initRules(dfns []RuleDefinition) {
 	rules := map[string]Rule{}
 	for _, dfn := range dfns {
-		tasks := []Runnable{}
+		tasks := []types.Runnable{}
 		for _, item := range dfn.Tasks {
 			tasks = append(tasks, NewRunnable(p.expand(item)))
 		}
