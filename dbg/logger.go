@@ -7,21 +7,13 @@ import (
 	"os"
 )
 
-var levelNames = map[types.LogLevel]string{
-	types.LOG_DEBUG:   "debug",
-	types.LOG_INFO:    "info",
-	types.LOG_NOTICE:  "notice",
-	types.LOG_WARNING: "warning",
-	types.LOG_ERROR:   "error",
-}
-
 func Log(lvl types.LogLevel, msg string) {
 	options := opts.GetOptions()
 	if lvl < options.Verbosity {
 		return
 	}
 	fmt.Printf("[%s] %s\n",
-		levelNames[lvl], msg)
+		types.LOG_LEVELS[lvl], msg)
 }
 
 func Debug(msg string, args ...interface{}) {

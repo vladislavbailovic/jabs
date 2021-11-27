@@ -9,3 +9,11 @@ const (
 	LOG_WARNING
 	LOG_ERROR
 )
+
+var LOG_LEVELS = map[LogLevel]string{
+	LOG_DEBUG:   "debug",
+	LOG_INFO:    "info",
+	LOG_NOTICE:  "notice",
+	LOG_WARNING: "warning",
+	LOG_ERROR:   "error",
+}

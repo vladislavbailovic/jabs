@@ -6,7 +6,6 @@ TODO
 ----
 
 - [ ] Options
-- [ ] Exec time tracking
 - [ ] CLI runner
 - [ ] Project monitoring
 - [ ] Multi-file definitions
