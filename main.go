@@ -4,7 +4,7 @@ import (
 	"context"
 	"fmt"
 	"jabs/dbg"
-	"jabs/options"
+	"jabs/opts"
 	"strings"
 )
 
@@ -12,7 +12,7 @@ func main() {
 	ctx := ApplyEnvironment(context.Background())
 
 	//ctx = context.WithValue(ctx, OPT_VERBOSITY, int(LOG_INFO))
-	options.InitOptions(ctx)
+	opts.InitOptions(ctx)
 
 	p := NewPreprocessor("./examples/self.yml")
 	es := NewEvaluationStack("cover:html", p.Rules)

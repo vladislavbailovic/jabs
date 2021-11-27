@@ -1,4 +1,4 @@
-package options
+package opts
 
 import (
 	"context"
@@ -23,9 +23,9 @@ func Test_Options(t *testing.T) {
 
 func Test_Options_Defaults(t *testing.T) {
 	ctx := context.TODO()
-	opts := InitOptions(ctx)
+	options := InitOptions(ctx)
 
-	if "" != opts.Root {
+	if "" != options.Root {
 		t.Fatalf("defaults are not yet implemented")
 	}
 	resetOptions()

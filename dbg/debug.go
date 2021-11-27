@@ -2,7 +2,7 @@ package dbg
 
 import (
 	"fmt"
-	"jabs/options"
+	"jabs/opts"
 	"jabs/types"
 	"os"
 )
@@ -16,8 +16,8 @@ var levelNames = map[types.LogLevel]string{
 }
 
 func Log(lvl types.LogLevel, msg string) {
-	opts := options.GetOptions()
-	if lvl < opts.Verbosity {
+	options := opts.GetOptions()
+	if lvl < options.Verbosity {
 		return
 	}
 	fmt.Printf("[%s] %s\n",
