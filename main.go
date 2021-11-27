@@ -22,6 +22,7 @@ func main() {
 	timer.Lap("parse")
 
 	printStack(es)
+	// executeStack(es)
 	timer.Lap("print")
 
 	dbg.Debug("duration: %dms", timer.Duration()/dbg.TIME_MS)
@@ -36,8 +37,7 @@ func printStack(es EvaluationStack) {
 	for idx, rule := range es.stack {
 		out = append(out, fmt.Sprintf("# Rule %d -- %s", idx, rule.Name))
 		for _, task := range rule.Tasks {
-			cmd := NewScriptable(task)
-			out = append(out, cmd.GetScript())
+			out = append(out, task.GetScript())
 		}
 		out = append(out, "")
 	}
@@ -47,15 +47,22 @@ func printStack(es EvaluationStack) {
 func executeStack(es EvaluationStack) {
 	dbg.Debug("Stack")
 	dbg.Debug("--------------------")
+	timer := dbg.NewStopwatch()
 	for _, rl := range es.stack {
 		dbg.Debug("\t- %s", rl.Name)
 		for i, task := range rl.Tasks {
-			cmd := NewExecutable(task)
-			out, err := cmd.Execute()
+			out, err := task.Execute()
 			if err != nil {
 				dbg.Error("%v", err)
 			}
 			dbg.Debug("\t\t%d) %v", i+1, out)
+			timer.Lap(fmt.Sprintf("Rule %s :: Task %d", rl.Name, i))
 		}
+	}
+	dbg.Debug("--------------------")
+	dbg.Info("--------------------")
+	dbg.Info("Execution times")
+	for name, time := range timer.GetLaps() {
+		dbg.Info("\t%s: %dms", name, time/dbg.TIME_MS)
 	}
 }

@@ -17,6 +17,11 @@ type Scriptable interface {
 	GetScript() string
 }
 
+type Runnable interface {
+	Executable
+	Scriptable
+}
+
 type Command struct {
 	source string
 }
@@ -29,7 +34,7 @@ type Scriptlet struct {
 	Command
 }
 
-func NewExecutable(cmd string) Executable {
+func NewRunnable(cmd string) Runnable {
 	command := Command{cmd}
 	if len(strings.Split(cmd, "\n")) > 1 {
 		return &Scriptlet{command}
@@ -37,8 +42,12 @@ func NewExecutable(cmd string) Executable {
 	return &Cmdlet{command}
 }
 
+func NewExecutable(cmd string) Executable {
+	return NewRunnable(cmd).(Executable)
+}
+
 func NewScriptable(cmd string) Scriptable {
-	return NewExecutable(cmd).(Scriptable)
+	return NewRunnable(cmd).(Scriptable)
 }
 
 func (c *Cmdlet) Execute() (string, error) {

@@ -22,7 +22,7 @@ type Rule struct {
 	Name      string
 	Observes  []string
 	DependsOn []string
-	Tasks     []string
+	Tasks     []Runnable
 }
 
 type Preprocessor struct {
@@ -46,9 +46,9 @@ func (p *Preprocessor) initMacros(dfns []MacroDefinition) {
 func (p *Preprocessor) initRules(dfns []RuleDefinition) {
 	rules := map[string]Rule{}
 	for _, dfn := range dfns {
-		tasks := []string{}
+		tasks := []Runnable{}
 		for _, item := range dfn.Tasks {
-			tasks = append(tasks, p.expand(item))
+			tasks = append(tasks, NewRunnable(p.expand(item)))
 		}
 		dependencies := []string{}
 		for _, item := range dfn.DependsOn {
