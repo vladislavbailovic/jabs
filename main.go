@@ -15,10 +15,8 @@ func main() {
 	timer := dbg.GetTimer()
 	ctx := ApplyEnvironment(context.Background())
 
-	flags := flag.NewFlagSet("main", flag.ContinueOnError)
-	file := flags.String("f", "./examples/self.yml", "File to process")
-	// file := flag.String("f", "./examples/self.yml", "File to process")
-	flag.StringVar(file, "f", "./examples/self.yml", "File to process")
+	fs := flag.NewFlagSet("main", flag.ContinueOnError)
+	file := fs.String("f", "./examples/self.yml", "File to process")
 
 	var subcmdtype string
 	if len(os.Args) >= 2 {
@@ -32,38 +30,33 @@ func main() {
 	case "run":
 	case "print":
 	default:
+		position = 1
 		subcmdtype = "print"
 		fmt.Println("print subcommand")
-		position = 0
-	}
-	flags.Parse(os.Args[position:])
-	flag.Parse()
-
-	//ctx = context.WithValue(ctx, OPT_VERBOSITY, int(LOG_INFO))
-
-	var root string
-	if position == 0 {
-		if len(flag.Args()) > 0 {
-			root = flag.Args()[len(flag.Args())-1]
-		}
-	} else {
-		if len(flags.Args()) > 0 {
-			root = flags.Args()[len(flags.Args())-1]
-		}
-	}
-	if "" == root {
-		root = "cover:html"
 	}
 
 	var subcmd types.Subcommand
 	switch subcmdtype {
 	case "run":
-		subcmd = cmd.NewRunSubcommand(*file, root)
+		subcmd = cmd.NewRunSubcommand(fs)
 	case "print":
-		subcmd = cmd.NewPrintSubcommand(*file, root)
+		subcmd = cmd.NewPrintSubcommand(fs)
+	}
+	fs.Parse(os.Args[position:])
+
+	var root string
+	if len(fs.Args()) > 0 {
+		root = fs.Args()[len(fs.Args())-1]
+	}
+	if "" == root {
+		root = "cover:html"
 	}
 
+	ctx = context.WithValue(ctx, opts.OPT_PATH, *file)
+	ctx = context.WithValue(ctx, opts.OPT_ROOT, root)
+
 	ctx = subcmd.Init(ctx)
+
 	opts.InitOptions(ctx)
 	timer.Lap("boot")
 

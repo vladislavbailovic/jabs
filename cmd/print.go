@@ -5,40 +5,38 @@ import (
 	"flag"
 	"fmt"
 	"jabs/dbg"
+	"jabs/opts"
 	"jabs/parse"
 	"strings"
 )
 
 type PrintSubcommand struct {
-	flags *flag.FlagSet
-
-	root string
-	file string
+	fs       *flag.FlagSet
+	whatever *string
 }
 
-func NewPrintSubcommand(file string, root string) *PrintSubcommand {
-	ps := PrintSubcommand{
-		flags: flag.NewFlagSet("print", flag.ContinueOnError),
-		file:  file,
-		root:  root,
-	}
+func NewPrintSubcommand(fs *flag.FlagSet) *PrintSubcommand {
+	ps := PrintSubcommand{fs: fs}
+	ps.whatever = fs.String("whatever", "this is whatever", "whatever arg")
 	return &ps
 }
 
 func (ps *PrintSubcommand) Init(ctx context.Context) context.Context {
-	ps.flags.Parse(flag.Args())
 	// ...
 	// privates are now populated with flags
 	// so init context and return it
+
+	// dbg.Debug("WHATEVER: [%s]", *ps.whatever)
 	return ctx
 }
 
 func (ps PrintSubcommand) Execute() (string, error) {
 	timer := dbg.GetTimer()
+	options := opts.GetOptions()
 
-	p := parse.NewPreprocessor(ps.file)
+	p := parse.NewPreprocessor(options.Path)
 	timer.Lap("preprocess")
-	es := parse.NewEvaluationStack(ps.root, p.Rules)
+	es := parse.NewEvaluationStack(options.Root, p.Rules)
 	timer.Lap("parse")
 	printStack(es)
 	return "", nil

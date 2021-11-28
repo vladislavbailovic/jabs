@@ -5,27 +5,20 @@ import (
 	"flag"
 	"fmt"
 	"jabs/dbg"
+	"jabs/opts"
 	"jabs/parse"
 )
 
 type RunSubcommand struct {
-	flags *flag.FlagSet
-
-	root string
-	file string
+	fs *flag.FlagSet
 }
 
-func NewRunSubcommand(file string, root string) *RunSubcommand {
-	rs := RunSubcommand{
-		flags: flag.NewFlagSet("print", flag.ContinueOnError),
-		file:  file,
-		root:  root,
-	}
+func NewRunSubcommand(fs *flag.FlagSet) *RunSubcommand {
+	rs := RunSubcommand{fs: fs}
 	return &rs
 }
 
 func (rs *RunSubcommand) Init(ctx context.Context) context.Context {
-	rs.flags.Parse(flag.Args())
 	// ...
 	// privates are now populated with flags
 	// so init context and return it
@@ -34,10 +27,11 @@ func (rs *RunSubcommand) Init(ctx context.Context) context.Context {
 
 func (rs RunSubcommand) Execute() (string, error) {
 	timer := dbg.GetTimer()
+	options := opts.GetOptions()
 
-	p := parse.NewPreprocessor(rs.file)
+	p := parse.NewPreprocessor(options.Path)
 	timer.Lap("preprocess")
-	es := parse.NewEvaluationStack(rs.root, p.Rules)
+	es := parse.NewEvaluationStack(options.Root, p.Rules)
 	timer.Lap("parse")
 	executeStack(es)
 	return "", nil
