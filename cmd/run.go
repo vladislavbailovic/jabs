@@ -26,6 +26,11 @@ func (rs *RunSubcommand) Init(ctx context.Context) context.Context {
 }
 
 func (rs RunSubcommand) Execute() (string, error) {
+	Run()
+	return "", nil
+}
+
+func Run() {
 	timer := dbg.GetTimer()
 	options := opts.GetOptions()
 
@@ -34,7 +39,6 @@ func (rs RunSubcommand) Execute() (string, error) {
 	es := parse.NewEvaluationStack(options.Root, p.Rules)
 	timer.Lap("parse")
 	executeStack(es)
-	return "", nil
 }
 
 func executeStack(es parse.EvaluationStack) {

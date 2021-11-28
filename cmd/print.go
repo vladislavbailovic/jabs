@@ -31,6 +31,11 @@ func (ps *PrintSubcommand) Init(ctx context.Context) context.Context {
 }
 
 func (ps PrintSubcommand) Execute() (string, error) {
+	Print()
+	return "", nil
+}
+
+func Print() {
 	timer := dbg.GetTimer()
 	options := opts.GetOptions()
 
@@ -39,7 +44,6 @@ func (ps PrintSubcommand) Execute() (string, error) {
 	es := parse.NewEvaluationStack(options.Root, p.Rules)
 	timer.Lap("parse")
 	printStack(es)
-	return "", nil
 }
 
 func printStack(es parse.EvaluationStack) {

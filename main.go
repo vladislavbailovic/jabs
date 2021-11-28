@@ -16,6 +16,8 @@ func usage(fs *flag.FlagSet) {
 	fmt.Printf("Subcommands:\n")
 	fmt.Printf("  - print\n")
 	fmt.Printf("  - run\n")
+	fmt.Printf("  - watch\n")
+	fmt.Printf("The watch subcommand will read a list of files to watch from STDIN\n")
 	fmt.Printf("Flags:\n")
 	fs.PrintDefaults()
 	os.Exit(0)
@@ -39,6 +41,7 @@ func main() {
 	position := 2
 	switch subcmdtype {
 	case "run":
+	case "watch":
 	case "print":
 	default:
 		position = 1
@@ -50,6 +53,8 @@ func main() {
 	switch subcmdtype {
 	case "run":
 		subcmd = cmd.NewRunSubcommand(fs)
+	case "watch":
+		subcmd = cmd.NewWatchSubcommand(fs)
 	case "print":
 		subcmd = cmd.NewPrintSubcommand(fs)
 	}
