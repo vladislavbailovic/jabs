@@ -73,9 +73,11 @@ func (ws WatchSubcommand) Execute() (string, error) {
 				case event.Op&fsnotify.Remove == fsnotify.Remove:
 					log.Printf("Remove: %s: %s", event.Op, event.Name)
 					Action()
+					watcher.Add(event.Name) // @TODO: handle error
 				case event.Op&fsnotify.Rename == fsnotify.Rename:
 					log.Printf("Rename: %s: %s", event.Op, event.Name)
 					Action()
+					// @TODO: readd?
 				case event.Op&fsnotify.Chmod == fsnotify.Chmod:
 					log.Printf("Chmod:  %s: %s", event.Op, event.Name)
 					Action()
