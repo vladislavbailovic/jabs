@@ -6,7 +6,6 @@ import (
 	"flag"
 	"jabs/dbg"
 	"jabs/opts"
-	"log"
 	"os"
 	"strings"
 
@@ -50,7 +49,7 @@ func (ws WatchSubcommand) Execute() (string, error) {
 	}
 	defer watcher.Close()
 
-	var Action := Print
+	Action := Print
 	switch *ws.action {
 	case "print":
 		Action = Print
@@ -64,25 +63,25 @@ func (ws WatchSubcommand) Execute() (string, error) {
 			case event := <-watcher.Events:
 				switch {
 				case event.Op&fsnotify.Write == fsnotify.Write:
-					log.Printf("Write:  %s: %s", event.Op, event.Name)
+					dbg.Debug("Write:  %s: %s", event.Op, event.Name)
 					Action()
 				case event.Op&fsnotify.Create == fsnotify.Create:
-					log.Printf("Create: %s: %s", event.Op, event.Name)
+					dbg.Debug("Create: %s: %s", event.Op, event.Name)
 					Action()
 				case event.Op&fsnotify.Remove == fsnotify.Remove:
-					log.Printf("Remove: %s: %s", event.Op, event.Name)
+					dbg.Debug("Remove: %s: %s", event.Op, event.Name)
 					Action()
 					watcher.Add(event.Name) // @TODO: handle error
 				case event.Op&fsnotify.Rename == fsnotify.Rename:
-					log.Printf("Rename: %s: %s", event.Op, event.Name)
+					dbg.Debug("Rename: %s: %s", event.Op, event.Name)
 					Action()
 					// @TODO: readd?
 				case event.Op&fsnotify.Chmod == fsnotify.Chmod:
-					log.Printf("Chmod:  %s: %s", event.Op, event.Name)
+					dbg.Debug("Chmod:  %s: %s", event.Op, event.Name)
 					Action()
 				}
 			case err := <-watcher.Errors:
-				log.Printf("ERROR: %v", err)
+				dbg.Error("ERROR: %v", err)
 			}
 		}
 	}()

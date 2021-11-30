@@ -3,7 +3,6 @@ package main
 import (
 	"context"
 	"flag"
-	"fmt"
 	"jabs/cmd"
 	"jabs/dbg"
 	"jabs/opts"
@@ -12,13 +11,13 @@ import (
 )
 
 func usage(fs *flag.FlagSet) {
-	fmt.Printf("Usage: jabs <SUBCOMMAND> <FLAGS> <RULE>\n")
-	fmt.Printf("Subcommands:\n")
-	fmt.Printf("  - print\n")
-	fmt.Printf("  - run\n")
-	fmt.Printf("  - watch\n")
-	fmt.Printf("The watch subcommand will read a list of files to watch from STDIN\n")
-	fmt.Printf("Flags:\n")
+	dbg.Out("Usage: jabs <SUBCOMMAND> <FLAGS> <RULE>\n")
+	dbg.Out("Subcommands:\n")
+	dbg.Out("  - print\n")
+	dbg.Out("  - run\n")
+	dbg.Out("  - watch\n")
+	dbg.Out("The watch subcommand will read a list of files to watch from STDIN\n")
+	dbg.Out("Flags:\n")
 	fs.PrintDefaults()
 	os.Exit(0)
 }
@@ -47,7 +46,6 @@ func main() {
 	default:
 		position = 1
 		subcmdtype = "print"
-		fmt.Println("print subcommand")
 	}
 
 	var subcmd types.Subcommand
