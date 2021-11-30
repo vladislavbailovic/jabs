@@ -46,8 +46,7 @@ func (ws WatchSubcommand) Execute() (string, error) {
 
 	watcher, err := fsnotify.NewWatcher()
 	if err != nil {
-		dbg.Error("%v", err)
-		panic(err)
+		dbg.FatalError("%v", err)
 	}
 	defer watcher.Close()
 
@@ -92,8 +91,7 @@ func (ws WatchSubcommand) Execute() (string, error) {
 	for _, fp := range sources {
 		err := watcher.Add(fp)
 		if err != nil {
-			dbg.Error("%v", err)
-			panic(err)
+			dbg.FatalError("%v", err)
 		}
 	}
 	<-done

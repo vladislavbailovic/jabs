@@ -55,7 +55,7 @@ func (s *Scriptlet) Execute() (string, error) {
 	file := "/data/Projects/geek/jabs/tmp"
 	err := ioutil.WriteFile(file, []byte(s.source), 0744)
 	if err != nil {
-		dbg.Error("could not write file %s: %v", file, err)
+		dbg.FatalError("could not write file %s: %v", file, err)
 	}
 	out, err := exec.Command(file).Output()
 	os.Remove(file)

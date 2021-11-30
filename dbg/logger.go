@@ -34,5 +34,13 @@ func Warning(msg string, args ...interface{}) {
 
 func Error(msg string, args ...interface{}) {
 	Log(types.LOG_ERROR, fmt.Sprintf(msg, args...))
+	options := opts.GetOptions()
+	if !options.Force {
+		os.Exit(1)
+	}
+}
+
+func FatalError(msg string, args ...interface{}) {
+	Log(types.LOG_ERROR, fmt.Sprintf(msg, args...))
 	os.Exit(1)
 }
