@@ -29,6 +29,7 @@ func main() {
 
 	fs := flag.NewFlagSet("main", flag.ContinueOnError)
 	file := fs.String("f", "./examples/self.yml", "File to process")
+	force := fs.Bool("force", false, "Force-run (do not stop at recoverable errors)")
 	help := fs.Bool("h", false, "Show help")
 
 	var subcmdtype string
@@ -74,6 +75,7 @@ func main() {
 
 	ctx = context.WithValue(ctx, opts.OPT_PATH, *file)
 	ctx = context.WithValue(ctx, opts.OPT_ROOT, root)
+	ctx = context.WithValue(ctx, opts.OPT_FORCE, *force)
 
 	ctx = subcmd.Init(ctx)
 

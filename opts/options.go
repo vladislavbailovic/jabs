@@ -11,6 +11,7 @@ const (
 	OPT_WATCH OptionKey = iota
 	OPT_ROOT
 	OPT_PATH
+	OPT_FORCE
 	OPT_VERBOSITY
 )
 
@@ -18,6 +19,7 @@ type Options struct {
 	Watch     bool
 	Root      string
 	Path      string
+	Force     bool
 	Verbosity types.LogLevel
 }
 
@@ -56,6 +58,7 @@ func InitOptions(ctx context.Context) Options {
 		Watch:     getBoolean(ctx, OPT_WATCH),
 		Root:      getString(ctx, OPT_ROOT),
 		Path:      getString(ctx, OPT_PATH),
+		Force:     getBoolean(ctx, OPT_FORCE),
 		Verbosity: types.LogLevel(getInt(ctx, OPT_VERBOSITY)),
 	}
 	return _options
