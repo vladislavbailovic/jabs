@@ -50,7 +50,7 @@ func (ws WatchSubcommand) Execute() (string, error) {
 	}
 	defer watcher.Close()
 
-	var Action func()
+	var Action := Print
 	switch *ws.action {
 	case "print":
 		Action = Print
