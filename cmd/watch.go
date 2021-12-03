@@ -8,9 +8,12 @@ import (
 	"jabs/opts"
 	"os"
 	"strings"
+	"time"
 
 	"github.com/fsnotify/fsnotify"
 )
+
+const SLEEPYTIME time.Duration = 500
 
 type WatchSubcommand struct {
 	fs     *flag.FlagSet
@@ -60,28 +63,28 @@ func (ws WatchSubcommand) Execute() (string, error) {
 	go func() {
 		for {
 			select {
+
 			case event := <-watcher.Events:
 				switch {
-				case event.Op&fsnotify.Write == fsnotify.Write:
-					dbg.Debug("Write:  %s: %s", event.Op, event.Name)
-					Action()
-				case event.Op&fsnotify.Create == fsnotify.Create:
-					dbg.Debug("Create: %s: %s", event.Op, event.Name)
-					Action()
 				case event.Op&fsnotify.Remove == fsnotify.Remove:
-					dbg.Debug("Remove: %s: %s", event.Op, event.Name)
-					Action()
-					watcher.Add(event.Name) // @TODO: handle error
-				case event.Op&fsnotify.Rename == fsnotify.Rename:
-					dbg.Debug("Rename: %s: %s", event.Op, event.Name)
-					Action()
-					// @TODO: readd?
-				case event.Op&fsnotify.Chmod == fsnotify.Chmod:
-					dbg.Debug("Chmod:  %s: %s", event.Op, event.Name)
+					dbg.Warning("re-adding %s", event.Name)
+					watcher.Remove(event.Name)
+					time.Sleep(time.Millisecond * SLEEPYTIME)
+					err := watcher.Add(event.Name)
+					if err != nil {
+						dbg.FatalError("%v", err)
+					}
+					time.Sleep(time.Millisecond * SLEEPYTIME)
+					continue
+				default:
+					dbg.Debug("---- %v on %v ----", event.Op, event.Name)
+					time.Sleep(time.Millisecond * SLEEPYTIME)
 					Action()
 				}
+
 			case err := <-watcher.Errors:
-				dbg.Error("ERROR: %v", err)
+				dbg.FatalError("%v", err)
+				continue
 			}
 		}
 	}()

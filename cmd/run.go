@@ -52,7 +52,7 @@ func executeStack(es parse.EvaluationStack) {
 			if err != nil {
 				dbg.Error("%v", err)
 			}
-			dbg.Debug("\t\t%d) %v", i+1, out)
+			dbg.Info("\t\t%d) %v", i+1, out)
 			timer.Lap(fmt.Sprintf("Rule %s :: Task %d", rl.Name, i))
 		}
 	}
