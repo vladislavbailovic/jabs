@@ -6,6 +6,7 @@ import (
 	"flag"
 	"jabs/dbg"
 	"jabs/opts"
+	"jabs/types"
 	"os"
 	"strings"
 	"time"
@@ -35,7 +36,7 @@ func (ws *WatchSubcommand) Init(ctx context.Context) context.Context {
 	return ctx
 }
 
-func (ws WatchSubcommand) Execute() (string, error) {
+func (ws WatchSubcommand) Run() {
 	var sources []string
 	scanner := bufio.NewScanner(os.Stdin)
 	for scanner.Scan() {
@@ -52,12 +53,12 @@ func (ws WatchSubcommand) Execute() (string, error) {
 	}
 	defer watcher.Close()
 
-	Action := Print
+	var action types.Action = RunAction{}
 	switch *ws.action {
 	case "print":
-		Action = Print
+		action = PrintAction{}
 	case "run":
-		Action = Run
+		action = RunAction{}
 	}
 
 	go func() {
@@ -67,7 +68,7 @@ func (ws WatchSubcommand) Execute() (string, error) {
 			case event := <-watcher.Events:
 				switch {
 				case event.Op&fsnotify.Remove == fsnotify.Remove:
-					dbg.Warning("re-adding %s", event.Name)
+					dbg.Notice("re-adding %s", event.Name)
 					watcher.Remove(event.Name)
 					time.Sleep(time.Millisecond * SLEEPYTIME)
 					err := watcher.Add(event.Name)
@@ -79,7 +80,7 @@ func (ws WatchSubcommand) Execute() (string, error) {
 				default:
 					dbg.Debug("---- %v on %v ----", event.Op, event.Name)
 					time.Sleep(time.Millisecond * SLEEPYTIME)
-					Action()
+					action.Run()
 				}
 
 			case err := <-watcher.Errors:
@@ -97,6 +98,4 @@ func (ws WatchSubcommand) Execute() (string, error) {
 		}
 	}
 	<-done
-
-	return "", nil
 }

@@ -15,7 +15,11 @@ type Runnable interface {
 	Scriptable
 }
 
+type Action interface {
+	Run()
+}
+
 type Subcommand interface {
-	Executable
+	Action
 	Init(ctx context.Context) context.Context
 }

@@ -10,6 +10,7 @@ import (
 )
 
 type RunSubcommand struct {
+	RunAction
 	fs *flag.FlagSet
 }
 
@@ -25,12 +26,9 @@ func (rs *RunSubcommand) Init(ctx context.Context) context.Context {
 	return ctx
 }
 
-func (rs RunSubcommand) Execute() (string, error) {
-	Run()
-	return "", nil
-}
+type RunAction struct{}
 
-func Run() {
+func (ra RunAction) Run() {
 	timer := dbg.GetTimer()
 	options := opts.GetOptions()
 

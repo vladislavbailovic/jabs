@@ -80,7 +80,7 @@ func main() {
 	opts.InitOptions(ctx)
 	timer.Lap("boot")
 
-	subcmd.Execute()
+	subcmd.Run()
 	timer.Lap("subcommand")
 
 	dbg.Debug("duration: %dms", timer.Duration()/dbg.TIME_MS)

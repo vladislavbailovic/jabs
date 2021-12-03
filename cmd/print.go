@@ -11,6 +11,7 @@ import (
 )
 
 type PrintSubcommand struct {
+	PrintAction
 	fs       *flag.FlagSet
 	whatever *string
 }
@@ -30,12 +31,9 @@ func (ps *PrintSubcommand) Init(ctx context.Context) context.Context {
 	return ctx
 }
 
-func (ps PrintSubcommand) Execute() (string, error) {
-	Print()
-	return "", nil
-}
+type PrintAction struct{}
 
-func Print() {
+func (pa PrintAction) Run() {
 	timer := dbg.GetTimer()
 	options := opts.GetOptions()
 
