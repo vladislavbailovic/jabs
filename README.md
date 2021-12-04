@@ -5,9 +5,9 @@ Just Another Build System
 TODO
 ----
 
+- [ ] Log to stderr, command output to stdout or wherever
 - [ ] Option to stop and plow through on execution error (at the moment it stops)
 - [ ] Multi-file definitions
-- [ ] Log to stderr
 
 
 Feature list

@@ -6,7 +6,6 @@ import (
 	"jabs/cmd"
 	"jabs/dbg"
 	"jabs/opts"
-	"jabs/types"
 	"os"
 )
 
@@ -31,32 +30,17 @@ func main() {
 	force := fs.Bool("force", false, "Force-run (do not stop at recoverable errors)")
 	help := fs.Bool("h", false, "Show help")
 
-	var subcmdtype string
-	if len(os.Args) >= 2 {
-		subcmdtype = os.Args[1]
-	} else {
-		subcmdtype = ""
-	}
-
+	var wantedSubcommand string
 	position := 2
-	switch subcmdtype {
-	case "run":
-	case "watch":
-	case "print":
-	default:
+	if len(os.Args) >= 2 {
+		wantedSubcommand = os.Args[1]
+	} else {
 		position = 1
-		subcmdtype = "print"
+		wantedSubcommand = ""
 	}
 
-	var subcmd types.Subcommand
-	switch subcmdtype {
-	case "run":
-		subcmd = cmd.NewRunSubcommand(fs)
-	case "watch":
-		subcmd = cmd.NewWatchSubcommand(fs)
-	case "print":
-		subcmd = cmd.NewPrintSubcommand(fs)
-	}
+	subcmd := cmd.NewSubcommand(cmd.SubcommandType(wantedSubcommand), fs)
+
 	fs.Parse(os.Args[position:])
 
 	if *help {

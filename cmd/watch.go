@@ -6,7 +6,6 @@ import (
 	"flag"
 	"jabs/dbg"
 	"jabs/opts"
-	"jabs/types"
 	"os"
 	"strings"
 	"time"
@@ -53,13 +52,7 @@ func (ws WatchSubcommand) Run() {
 	}
 	defer watcher.Close()
 
-	var action types.Action = RunAction{}
-	switch *ws.action {
-	case "print":
-		action = PrintAction{}
-	case "run":
-		action = RunAction{}
-	}
+	action := NewAction(ActionType(*ws.action))
 
 	go func() {
 		for {
