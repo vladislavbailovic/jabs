@@ -5,6 +5,8 @@ Just Another Build System
 TODO
 ----
 
+- [ ] Timestamps bank
+- [ ] Standard library
 - [ ] Option to stop and plow through on execution error (at the moment it stops)
 - [ ] Multi-file definitions
 
