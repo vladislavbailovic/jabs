@@ -3,21 +3,22 @@ package main
 import (
 	"context"
 	"flag"
-	"fmt"
 	"jabs/cmd"
 	"jabs/dbg"
 	"jabs/opts"
+	"jabs/out"
 	"os"
+	"time"
 )
 
 func usage(fs *flag.FlagSet) {
-	dbg.Out("Usage: jabs <SUBCOMMAND> <FLAGS> <RULE>\n")
-	dbg.Out("Subcommands:\n")
-	dbg.Out("  - print\n")
-	dbg.Out("  - run\n")
-	dbg.Out("  - watch\n")
-	dbg.Out("The watch subcommand will read a list of files to watch from STDIN\n")
-	dbg.Out("Flags:\n")
+	out.Cli.Out("Usage: jabs <SUBCOMMAND> <FLAGS> <RULE>")
+	out.Cli.Out("Subcommands:")
+	out.Cli.Out("  - print")
+	out.Cli.Out("  - run")
+	out.Cli.Out("  - watch")
+	out.Cli.Out("The watch subcommand will read a list of files to watch from STDIN")
+	out.Cli.Out("Flags:")
 	fs.PrintDefaults()
 	os.Exit(0)
 }
@@ -36,15 +37,18 @@ func main() {
 	if len(os.Args) >= 2 {
 		wantedSubcommand = os.Args[1]
 	} else {
-		position = 1
 		wantedSubcommand = ""
 	}
+	subcmdType := cmd.SubcommandType(wantedSubcommand)
+	if cmd.SUBCMD_DEFAULT == subcmdType {
+		position = 1
+	}
 
-	subcmd := cmd.NewSubcommand(cmd.SubcommandType(wantedSubcommand), fs)
+	subcmd := cmd.NewSubcommand(subcmdType, fs)
 
 	go func() {
 		for event := range subcmd.Output() {
-			fmt.Println("FROM MAIN", event)
+			out.Cli.Out(event)
 		}
 	}()
 
@@ -52,6 +56,7 @@ func main() {
 
 	if *help {
 		usage(fs)
+		os.Exit(0)
 	}
 
 	var root string
@@ -70,6 +75,8 @@ func main() {
 
 	opts.InitOptions(ctx)
 	timer.Lap("boot")
+	dbg.Debug("\t%v subcommand (%s)\n", subcmdType, wantedSubcommand)
+	dbg.Debug("\tfile: %#v, root: %#v", *file, root)
 
 	done := make(chan bool)
 	go func() {
@@ -88,6 +95,7 @@ func main() {
 	}()
 
 	subcmd.Run()
+	time.Sleep(time.Millisecond * 10) // @TODO: remove this?
 	done <- true
 	<-done
 }

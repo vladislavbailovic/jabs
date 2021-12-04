@@ -3,22 +3,17 @@ package dbg
 import (
 	"fmt"
 	"jabs/opts"
+	"jabs/out"
 	"jabs/types"
 	"os"
 )
-
-func Out(msg string, args ...interface{}) {
-	fmt.Println(fmt.Sprintf(msg, args...))
-}
 
 func Log(lvl types.LogLevel, msg string) {
 	options := opts.GetOptions()
 	if lvl < options.Verbosity {
 		return
 	}
-	fmt.Fprintf(os.Stderr,
-		"[%s] %s\n",
-		types.LOG_LEVELS[lvl], msg)
+	out.Cli.Err("[%s] %s\n", types.LOG_LEVELS[lvl], msg)
 }
 
 func Debug(msg string, args ...interface{}) {

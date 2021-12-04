@@ -62,6 +62,5 @@ func (pa PrintAction) printStack(es parse.EvaluationStack) {
 		out = append(out, "")
 	}
 	// dbg.Info("\n" + strings.Join(out[:], "\n"))
-	dbg.Info("about to print to our channel")
 	pa.out <- strings.Join(out, "\n")
 }
