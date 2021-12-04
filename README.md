@@ -5,7 +5,6 @@ Just Another Build System
 TODO
 ----
 
-- [ ] Log to stderr, command output to stdout or wherever
 - [ ] Option to stop and plow through on execution error (at the moment it stops)
 - [ ] Multi-file definitions
 
@@ -25,3 +24,4 @@ Feature list
 - Tasks can be either printed in shell script compatible way, or executed
 - Has dedicated subcommands for printing and running and their own cli flags
 - Is able to monitor the list of files supplied via stdin using `watch` command, and re-run on change in mode designated by the `--action` param: `find . -type f -name '*.go' | go run . watch --action=run cover`
+- Action/subcommand outputs are sent to a channel, separate debug/log info and standard out
