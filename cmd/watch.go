@@ -18,12 +18,18 @@ const SLEEPYTIME time.Duration = 500
 type WatchSubcommand struct {
 	fs     *flag.FlagSet
 	action *string
+	out    chan string
 }
 
 func NewWatchSubcommand(fs *flag.FlagSet) *WatchSubcommand {
 	ws := WatchSubcommand{fs: fs}
 	ws.action = fs.String("action", "print", "Action to perform on resource change")
+	ws.out = make(chan string)
 	return &ws
+}
+
+func (s WatchSubcommand) Output() chan string {
+	return s.out
 }
 
 func (ws *WatchSubcommand) Init(ctx context.Context) context.Context {
@@ -53,6 +59,12 @@ func (ws WatchSubcommand) Run() {
 	defer watcher.Close()
 
 	action := NewAction(ActionType(*ws.action))
+
+	go func() {
+		for event := range action.Output() {
+			ws.out <- event
+		}
+	}()
 
 	go func() {
 		for {

@@ -16,6 +16,7 @@ type RunSubcommand struct {
 
 func NewRunSubcommand(fs *flag.FlagSet) *RunSubcommand {
 	rs := RunSubcommand{fs: fs}
+	rs.out = make(chan string)
 	return &rs
 }
 
@@ -26,7 +27,13 @@ func (rs *RunSubcommand) Init(ctx context.Context) context.Context {
 	return ctx
 }
 
-type RunAction struct{}
+type RunAction struct {
+	out chan string
+}
+
+func (a RunAction) Output() chan string {
+	return a.out
+}
 
 func (ra RunAction) Run() {
 	timer := dbg.GetTimer()
@@ -36,10 +43,10 @@ func (ra RunAction) Run() {
 	timer.Lap("preprocess")
 	es := parse.NewEvaluationStack(options.Root, p.Rules)
 	timer.Lap("parse")
-	executeStack(es)
+	ra.executeStack(es)
 }
 
-func executeStack(es parse.EvaluationStack) {
+func (ra RunAction) executeStack(es parse.EvaluationStack) {
 	dbg.Debug("Stack")
 	dbg.Debug("--------------------")
 	timer := dbg.NewStopwatch()
@@ -50,6 +57,7 @@ func executeStack(es parse.EvaluationStack) {
 			if err != nil {
 				dbg.Error("%v", err)
 			}
+			ra.out <- out
 			dbg.Info("\t\t%d) %v", i+1, out)
 			timer.Lap(fmt.Sprintf("Rule %s :: Task %d", rl.Name, i))
 		}

@@ -18,6 +18,7 @@ type Runnable interface {
 type ActionType int
 type Action interface {
 	Run()
+	Output() chan string
 }
 
 type SubcommandType int

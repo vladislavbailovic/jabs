@@ -18,6 +18,7 @@ type PrintSubcommand struct {
 
 func NewPrintSubcommand(fs *flag.FlagSet) *PrintSubcommand {
 	ps := PrintSubcommand{fs: fs}
+	ps.out = make(chan string)
 	ps.whatever = fs.String("whatever", "this is whatever", "whatever arg")
 	return &ps
 }
@@ -31,7 +32,13 @@ func (ps *PrintSubcommand) Init(ctx context.Context) context.Context {
 	return ctx
 }
 
-type PrintAction struct{}
+type PrintAction struct {
+	out chan string
+}
+
+func (a PrintAction) Output() chan string {
+	return a.out
+}
 
 func (pa PrintAction) Run() {
 	timer := dbg.GetTimer()
@@ -41,10 +48,10 @@ func (pa PrintAction) Run() {
 	timer.Lap("preprocess")
 	es := parse.NewEvaluationStack(options.Root, p.Rules)
 	timer.Lap("parse")
-	printStack(es)
+	pa.printStack(es)
 }
 
-func printStack(es parse.EvaluationStack) {
+func (pa PrintAction) printStack(es parse.EvaluationStack) {
 	out := []string{"#!/bin/bash", ""}
 
 	for idx, rule := range es.GetStack() {
@@ -54,5 +61,7 @@ func printStack(es parse.EvaluationStack) {
 		}
 		out = append(out, "")
 	}
-	dbg.Info("\n" + strings.Join(out[:], "\n"))
+	// dbg.Info("\n" + strings.Join(out[:], "\n"))
+	dbg.Info("about to print to our channel")
+	pa.out <- strings.Join(out, "\n")
 }

@@ -3,6 +3,7 @@ package main
 import (
 	"context"
 	"flag"
+	"fmt"
 	"jabs/cmd"
 	"jabs/dbg"
 	"jabs/opts"
@@ -41,6 +42,12 @@ func main() {
 
 	subcmd := cmd.NewSubcommand(cmd.SubcommandType(wantedSubcommand), fs)
 
+	go func() {
+		for event := range subcmd.Output() {
+			fmt.Println("FROM MAIN", event)
+		}
+	}()
+
 	fs.Parse(os.Args[position:])
 
 	if *help {
@@ -64,11 +71,23 @@ func main() {
 	opts.InitOptions(ctx)
 	timer.Lap("boot")
 
-	subcmd.Run()
-	timer.Lap("subcommand")
+	done := make(chan bool)
+	go func() {
+		for val := range done {
+			if !val {
+				continue
+			}
+			timer.Lap("subcommand")
 
-	dbg.Debug("duration: %dms", timer.Duration()/dbg.TIME_MS)
-	for name, time := range timer.GetLaps() {
-		dbg.Debug("\t%s: %dms", name, time/dbg.TIME_MS)
-	}
+			dbg.Debug("duration: %dms", timer.Duration()/dbg.TIME_MS)
+			for name, time := range timer.GetLaps() {
+				dbg.Debug("\t%s: %dms", name, time/dbg.TIME_MS)
+			}
+			os.Exit(0)
+		}
+	}()
+
+	subcmd.Run()
+	done <- true
+	<-done
 }

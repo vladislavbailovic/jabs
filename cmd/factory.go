@@ -23,13 +23,14 @@ func ActionType(which string) types.ActionType {
 }
 
 func NewAction(kind types.ActionType) types.Action {
+	out := make(chan string)
 	switch kind {
 	case ACTION_DEFAULT:
-		return PrintAction{}
+		return PrintAction{out}
 	case ACTION_PRINT:
-		return PrintAction{}
+		return PrintAction{out}
 	case ACTION_RUN:
-		return RunAction{}
+		return RunAction{out}
 	}
 	return nil
 }
