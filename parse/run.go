@@ -1,5 +1,7 @@
 package parse
 
+// @TODO refactor this out or whatever, it's not a parsing thing
+
 import (
 	"fmt"
 	"io/ioutil"

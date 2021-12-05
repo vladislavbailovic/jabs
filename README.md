@@ -5,6 +5,10 @@ Just Another Build System
 TODO
 ----
 
+- [ ] Other formats output
+- [ ] Output transformers
+- [ ] Build server
+- [ ] Defaults conventions
 - [ ] Timestamps bank
 - [ ] Standard library
 - [ ] Multi-file definitions
