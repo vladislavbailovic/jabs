@@ -11,6 +11,11 @@ import (
 	"os"
 )
 
+const (
+	DEFAULT_FILE string = "./examples/self.yml"
+	DEFAULT_RULE        = "cover:html"
+)
+
 func usage(fs *flag.FlagSet) {
 	out.Cli.Out("Usage: jabs <SUBCOMMAND> <FLAGS> <RULE>")
 	out.Cli.Out("Subcommands:")
@@ -28,7 +33,7 @@ func main() {
 	ctx := ApplyEnvironment(context.Background())
 
 	fs := flag.NewFlagSet("main", flag.ContinueOnError)
-	file := fs.String("f", "./examples/self.yml", "File to process")
+	file := fs.String("f", DEFAULT_FILE, "File to process")
 	force := fs.Bool("force", false, "Force-run (do not stop at recoverable errors)")
 	help := fs.Bool("h", false, "Show help")
 
@@ -80,7 +85,7 @@ func main() {
 		root = fs.Args()[len(fs.Args())-1]
 	}
 	if "" == root {
-		root = "cover:html"
+		root = DEFAULT_RULE
 	}
 
 	ctx = context.WithValue(ctx, opts.OPT_PATH, *file)
