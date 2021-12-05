@@ -3,6 +3,7 @@ package main
 import (
 	"context"
 	"flag"
+	"fmt"
 	"jabs/cmd"
 	"jabs/dbg"
 	"jabs/opts"
@@ -17,11 +18,17 @@ const (
 )
 
 func usage(fs *flag.FlagSet) {
+	isDefault := func(action string) string {
+		if cmd.SubcommandType(action) == cmd.DefaultSubcommand() {
+			return "(default)"
+		}
+		return ""
+	}
 	out.Cli.Out("Usage: jabs <SUBCOMMAND> <FLAGS> <RULE>")
 	out.Cli.Out("Subcommands:")
-	out.Cli.Out("  - print")
-	out.Cli.Out("  - run")
-	out.Cli.Out("  - watch")
+	out.Cli.Out(fmt.Sprintf("  - print %s", isDefault("print")))
+	out.Cli.Out(fmt.Sprintf("  - run %s", isDefault("run")))
+	out.Cli.Out(fmt.Sprintf("  - watch %s", isDefault("watch")))
 	out.Cli.Out("The watch subcommand will read a list of files to watch from STDIN")
 	out.Cli.Out("Flags:")
 	fs.PrintDefaults()

@@ -22,12 +22,17 @@ func ActionType(which string) types.ActionType {
 	}
 }
 
+func DefaultAction() types.ActionType {
+	return ACTION_PRINT
+}
+
 func NewAction(kind types.ActionType) types.Action {
 	out := make(chan string)
 	state := make(chan types.ActionState)
+	if kind == ACTION_DEFAULT {
+		kind = DefaultAction()
+	}
 	switch kind {
-	case ACTION_DEFAULT:
-		return PrintAction{out, state}
 	case ACTION_PRINT:
 		return PrintAction{out, state}
 	case ACTION_RUN:
@@ -56,10 +61,15 @@ func SubcommandType(which string) types.SubcommandType {
 	}
 }
 
+func DefaultSubcommand() types.SubcommandType {
+	return SUBCMD_PRINT
+}
+
 func NewSubcommand(kind types.SubcommandType, fs *flag.FlagSet) types.Subcommand {
+	if kind == SUBCMD_DEFAULT {
+		kind = DefaultSubcommand()
+	}
 	switch kind {
-	case SUBCMD_DEFAULT:
-		return NewPrintSubcommand(fs)
 	case SUBCMD_PRINT:
 		return NewPrintSubcommand(fs)
 	case SUBCMD_RUN:
