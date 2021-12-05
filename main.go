@@ -7,6 +7,7 @@ import (
 	"jabs/dbg"
 	"jabs/opts"
 	"jabs/out"
+	"jabs/types"
 	"os"
 )
 
@@ -47,9 +48,23 @@ func main() {
 
 	done := make(chan bool)
 	go func() {
-		for event := range subcmd.Output() {
-			out.Cli.Out(event)
-			done <- true
+		for {
+			select {
+			case state := <-subcmd.State():
+				switch state {
+				case types.STATE_INIT:
+					dbg.Info("--- Init ---")
+				case types.STATE_RUN:
+					dbg.Info("--- Run ---")
+				case types.STATE_DONE:
+					dbg.Info("--- Done ---")
+					done <- true
+				}
+			case output := <-subcmd.Output():
+				dbg.Debug("--- Output ---")
+				out.Cli.Out(output)
+				dbg.Debug("--- End of output ---")
+			}
 		}
 	}()
 
@@ -76,7 +91,7 @@ func main() {
 
 	opts.InitOptions(ctx)
 	timer.Lap("boot")
-	dbg.Debug("\t%v subcommand (%s)\n", subcmdType, wantedSubcommand)
+	dbg.Debug("\t%v subcommand (%s)", subcmdType, wantedSubcommand)
 	dbg.Debug("\tfile: %#v, root: %#v", *file, root)
 
 	go func() {

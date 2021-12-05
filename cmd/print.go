@@ -7,6 +7,7 @@ import (
 	"jabs/dbg"
 	"jabs/opts"
 	"jabs/parse"
+	"jabs/types"
 	"strings"
 )
 
@@ -19,11 +20,13 @@ type PrintSubcommand struct {
 func NewPrintSubcommand(fs *flag.FlagSet) *PrintSubcommand {
 	ps := PrintSubcommand{fs: fs}
 	ps.out = make(chan string)
+	ps.state = make(chan types.ActionState)
 	ps.whatever = fs.String("whatever", "this is whatever", "whatever arg")
 	return &ps
 }
 
 func (ps *PrintSubcommand) Init(ctx context.Context) context.Context {
+	ps.state <- types.STATE_INIT
 	// ...
 	// privates are now populated with flags
 	// so init context and return it
@@ -33,14 +36,19 @@ func (ps *PrintSubcommand) Init(ctx context.Context) context.Context {
 }
 
 type PrintAction struct {
-	out chan string
+	out   chan string
+	state chan types.ActionState
 }
 
 func (a PrintAction) Output() chan string {
 	return a.out
 }
+func (a PrintAction) State() chan types.ActionState {
+	return a.state
+}
 
 func (pa PrintAction) Run() {
+	pa.state <- types.STATE_RUN
 	timer := dbg.GetTimer()
 	options := opts.GetOptions()
 
@@ -63,4 +71,5 @@ func (pa PrintAction) printStack(es parse.EvaluationStack) {
 	}
 	// dbg.Info("\n" + strings.Join(out[:], "\n"))
 	pa.out <- strings.Join(out, "\n")
+	pa.state <- types.STATE_DONE
 }
