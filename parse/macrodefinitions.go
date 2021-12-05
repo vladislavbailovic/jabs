@@ -132,7 +132,7 @@ func (md *MacroDefinitions) convertShellcode() {
 				dbg.Debug("\t\tcommand does not have %s", key)
 				continue
 			}
-			dbg.Debug("\t\tcommand DOES have %s, processing", key)
+			dbg.Debug("\t\tcommand DOES have %s, processing for [%s]", key, macro.Value)
 
 			md.Dfns[idx].Command = strings.Replace(dfn.Command, key, macro.Value, -1)
 			dbg.Debug("\t\tresult: %s", md.Dfns[idx].Command)
