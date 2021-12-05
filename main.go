@@ -8,7 +8,6 @@ import (
 	"jabs/opts"
 	"jabs/out"
 	"os"
-	"time"
 )
 
 func usage(fs *flag.FlagSet) {
@@ -46,9 +45,11 @@ func main() {
 
 	subcmd := cmd.NewSubcommand(subcmdType, fs)
 
+	done := make(chan bool)
 	go func() {
 		for event := range subcmd.Output() {
 			out.Cli.Out(event)
+			done <- true
 		}
 	}()
 
@@ -78,7 +79,6 @@ func main() {
 	dbg.Debug("\t%v subcommand (%s)\n", subcmdType, wantedSubcommand)
 	dbg.Debug("\tfile: %#v, root: %#v", *file, root)
 
-	done := make(chan bool)
 	go func() {
 		for val := range done {
 			if !val {
@@ -95,7 +95,5 @@ func main() {
 	}()
 
 	subcmd.Run()
-	time.Sleep(time.Millisecond * 10) // @TODO: remove this?
-	done <- true
 	<-done
 }
