@@ -9,6 +9,8 @@ TODO
 - [ ] Output transformers
 - [ ] Build server
 - [ ] Defaults conventions
+- [ ] Toggle verbosity from CLI params
+- [ ] Optionally include rule conditions in print output
 - [ ] Timestamps bank
 - [ ] Standard library
 - [ ] Multi-file definitions
