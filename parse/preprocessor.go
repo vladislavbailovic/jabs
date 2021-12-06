@@ -57,6 +57,7 @@ func (p *Preprocessor) initRules(dfns []RuleDefinition) {
 		}
 		observes := []string{}
 		for _, obs := range dfn.Observes {
+			// @TODO make observables proper runnables
 			observes = append(observes, p.expand(obs))
 		}
 		name := p.expand(dfn.Name)

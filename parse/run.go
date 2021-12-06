@@ -67,7 +67,10 @@ func (s *Scriptlet) Execute() (string, error) {
 	return strings.TrimSpace(string(out)), nil
 }
 
+// @TODO: GetScriptAsContition - for observables printing
+
 func (s Scriptlet) GetScript() string {
+	// @TODO: get proper files procedures going on
 	file := "/data/Projects/geek/jabs/tmp"
 	ret := []string{
 		fmt.Sprintf("cat <<'EOF' > %s", file),
