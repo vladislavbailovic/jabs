@@ -62,14 +62,19 @@ func (pa PrintAction) Run() {
 func (pa PrintAction) printStack(es parse.EvaluationStack) {
 	out := []string{"#!/bin/bash", ""}
 
-	for idx, rule := range es.GetStack() {
-		out = append(out, fmt.Sprintf("# Rule %d -- %s", idx, rule.Name))
-		for _, task := range rule.Tasks {
-			out = append(out, task.GetScript())
-		}
-		out = append(out, "")
+	for _, rule := range es.GetStack() {
+		out = append(out, pa.printRule(rule)...)
 	}
-	// dbg.Info("\n" + strings.Join(out[:], "\n"))
 	pa.out <- strings.Join(out, "\n")
 	pa.state <- types.STATE_DONE
+}
+
+func (pa PrintAction)printRule(rule types.Rule) []string {
+	out := []string{}
+	out = append(out, fmt.Sprintf("# Rule [%s] ---", rule.Name))
+	for _, task := range rule.Tasks {
+		out = append(out, task.GetScript())
+	}
+	out = append(out, "")
+	return out
 }
