@@ -60,3 +60,9 @@ Rule:
     - cover
   Tasks:
     - go tool cover -html=coverage.out
+---
+
+Rule:
+  Name: fmt
+  Tasks:
+    - find . -type f -name '*.go' -exec go fmt {} \;

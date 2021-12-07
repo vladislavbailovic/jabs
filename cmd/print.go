@@ -14,6 +14,7 @@ import (
 type subcommandOptions struct {
 	includeConditions *bool
 }
+
 var options subcommandOptions = subcommandOptions{}
 
 type PrintAction struct {
@@ -23,7 +24,7 @@ type PrintAction struct {
 
 type PrintSubcommand struct {
 	PrintAction
-	fs       *flag.FlagSet
+	fs *flag.FlagSet
 }
 
 func NewPrintSubcommand(fs *flag.FlagSet) *PrintSubcommand {
@@ -73,7 +74,7 @@ func (pa PrintAction) printStack(es parse.EvaluationStack) {
 	pa.state <- types.STATE_DONE
 }
 
-func (pa PrintAction)printRule(rule types.Rule) []string {
+func (pa PrintAction) printRule(rule types.Rule) []string {
 	out := []string{}
 	out = append(out, fmt.Sprintf("# Rule [%s] ---", rule.Name))
 	dbg.Info("Printing %s", rule.Name)

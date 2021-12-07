@@ -20,7 +20,6 @@ type Rule struct {
 	Tasks     []Instruction
 }
 
-
 type Macro struct {
 	Name  string
 	Value string
