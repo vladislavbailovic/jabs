@@ -10,7 +10,6 @@ TODO
 - [ ] Build server
 - [ ] Defaults conventions
 - [ ] Toggle verbosity from CLI params
-- [ ] Optionally include rule conditions in print output
 - [ ] Timestamps bank
 - [ ] Standard library
 - [ ] Multi-file definitions
@@ -33,3 +32,4 @@ Feature list
 - Is able to monitor the list of files supplied via stdin using `watch` command, and re-run on change in mode designated by the `--action` param: `find . -type f -name '*.go' | go run . watch --action=run cover`
 - Action/subcommand outputs are sent to a channel, separate debug/log info and standard out
 - Option to stop and plow through on execution error (`--force`)
+- Can optionally include rule conditions in print output

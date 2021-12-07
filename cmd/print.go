@@ -11,17 +11,26 @@ import (
 	"strings"
 )
 
+type subcommandOptions struct {
+	includeConditions *bool
+}
+var options subcommandOptions = subcommandOptions{}
+
+type PrintAction struct {
+	out   chan string
+	state chan types.ActionState
+}
+
 type PrintSubcommand struct {
 	PrintAction
 	fs       *flag.FlagSet
-	whatever *string
 }
 
 func NewPrintSubcommand(fs *flag.FlagSet) *PrintSubcommand {
 	ps := PrintSubcommand{fs: fs}
 	ps.out = make(chan string)
 	ps.state = make(chan types.ActionState)
-	ps.whatever = fs.String("whatever", "this is whatever", "whatever arg")
+	options.includeConditions = fs.Bool("conds", false, "Include rule conditions in output")
 	return &ps
 }
 
@@ -33,11 +42,6 @@ func (ps *PrintSubcommand) Init(ctx context.Context) context.Context {
 
 	// dbg.Debug("WHATEVER: [%s]", *ps.whatever)
 	return ctx
-}
-
-type PrintAction struct {
-	out   chan string
-	state chan types.ActionState
 }
 
 func (a PrintAction) Output() chan string {
@@ -72,6 +76,11 @@ func (pa PrintAction) printStack(es parse.EvaluationStack) {
 func (pa PrintAction)printRule(rule types.Rule) []string {
 	out := []string{}
 	out = append(out, fmt.Sprintf("# Rule [%s] ---", rule.Name))
+	if *options.includeConditions {
+		for _, obs := range rule.Observes {
+			out = append(out, obs.GetScript())
+		}
+	}
 	for _, task := range rule.Tasks {
 		out = append(out, task.GetScript())
 	}
