@@ -21,7 +21,7 @@ type Task string
 
 type Rule struct {
 	Name      string
-	Observes  []string
+	Observes  []types.Instruction
 	DependsOn []string
 	Tasks     []types.Instruction
 }
@@ -55,10 +55,9 @@ func (p *Preprocessor) initRules(dfns []RuleDefinition) {
 		for _, item := range dfn.DependsOn {
 			dependencies = append(dependencies, p.expand(item))
 		}
-		observes := []string{}
+		observes := []types.Instruction{}
 		for _, obs := range dfn.Observes {
-			// @TODO make observables proper runnables
-			observes = append(observes, p.expand(obs))
+			observes = append(observes, NewCommand(p.expand(obs)))
 		}
 		name := p.expand(dfn.Name)
 		rules[name] = Rule{
