@@ -11,10 +11,6 @@ import (
 
 func Test_Environment(t *testing.T) {
 	ctx := ApplyEnvironment(context.TODO())
-	level := ctx.Value(opts.OPT_VERBOSITY)
-	if nil == level {
-		t.Fatalf("Expected to have initial log level")
-	}
 
 	os.Setenv(envmap[opts.OPT_VERBOSITY], fmt.Sprintf("%v", types.LOG_ERROR))
 	ctx = ApplyEnvironment(context.TODO())

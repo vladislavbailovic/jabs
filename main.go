@@ -35,13 +35,24 @@ func usage(fs *flag.FlagSet) {
 	os.Exit(0)
 }
 
+func initContext() context.Context {
+	ctx := context.Background()
+	ctx = context.WithValue(ctx, opts.OPT_VERBOSITY, int(types.LOG_WARNING))
+	return ctx
+}
+
 func main() {
 	timer := dbg.GetTimer()
-	ctx := ApplyEnvironment(context.Background())
+	ctx := ApplyEnvironment(initContext())
 
 	fs := flag.NewFlagSet("main", flag.ContinueOnError)
 	file := fs.String("f", DEFAULT_FILE, "File to process")
 	force := fs.Bool("force", false, "Force-run (do not stop at recoverable errors)")
+
+	notice := fs.Bool("v", false, "Verbose output (verbosity level: notice")
+	info := fs.Bool("vv", false, "Verbose output (verbosity level: info")
+	debug := fs.Bool("vvv", false, "Verbose output (verbosity level: debug")
+
 	help := fs.Bool("h", false, "Show help")
 
 	var wantedSubcommand string
@@ -65,17 +76,12 @@ func main() {
 			case state := <-subcmd.State():
 				switch state {
 				case types.STATE_INIT:
-					dbg.Info("--- Init ---")
 				case types.STATE_RUN:
-					dbg.Info("--- Run ---")
 				case types.STATE_DONE:
-					dbg.Info("--- Done ---")
 					done <- true
 				}
 			case output := <-subcmd.Output():
-				dbg.Debug("--- Output ---")
 				out.Cli.Out(output)
-				dbg.Debug("--- End of output ---")
 			}
 		}
 	}()
@@ -98,6 +104,16 @@ func main() {
 	ctx = context.WithValue(ctx, opts.OPT_PATH, *file)
 	ctx = context.WithValue(ctx, opts.OPT_ROOT, root)
 	ctx = context.WithValue(ctx, opts.OPT_FORCE, *force)
+
+	if *notice {
+		ctx = context.WithValue(ctx, opts.OPT_VERBOSITY, int(types.LOG_NOTICE))
+	}
+	if *info {
+		ctx = context.WithValue(ctx, opts.OPT_VERBOSITY, int(types.LOG_INFO))
+	}
+	if *debug {
+		ctx = context.WithValue(ctx, opts.OPT_VERBOSITY, int(types.LOG_DEBUG))
+	}
 
 	ctx = subcmd.Init(ctx)
 

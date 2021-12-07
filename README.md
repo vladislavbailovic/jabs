@@ -9,7 +9,6 @@ TODO
 - [ ] Output transformers
 - [ ] Build server
 - [ ] Defaults conventions
-- [ ] Toggle verbosity from CLI params
 - [ ] Timestamps bank
 - [ ] Standard library
 - [ ] Multi-file definitions
@@ -33,3 +32,4 @@ Feature list
 - Action/subcommand outputs are sent to a channel, separate debug/log info and standard out
 - Option to stop and plow through on execution error (`--force`)
 - Can optionally include rule conditions in print output
+- Can toggle verbosity from CLI params

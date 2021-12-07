@@ -13,9 +13,8 @@ var envmap = map[opts.OptionKey]string{
 
 func ApplyEnvironment(ctx context.Context) context.Context {
 	logLevel, err := strconv.Atoi(os.Getenv(envmap[opts.OPT_VERBOSITY]))
-	if err != nil {
-		logLevel = 0
+	if err == nil {
+		ctx = context.WithValue(ctx, opts.OPT_VERBOSITY, logLevel)
 	}
-	ctx = context.WithValue(ctx, opts.OPT_VERBOSITY, logLevel)
 	return ctx
 }

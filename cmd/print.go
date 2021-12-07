@@ -76,11 +76,14 @@ func (pa PrintAction) printStack(es parse.EvaluationStack) {
 func (pa PrintAction)printRule(rule types.Rule) []string {
 	out := []string{}
 	out = append(out, fmt.Sprintf("# Rule [%s] ---", rule.Name))
+	dbg.Info("Printing %s", rule.Name)
 	if *options.includeConditions {
+		dbg.Info("\tEmitting rule conditions for %s", rule.Name)
 		for _, obs := range rule.Observes {
 			out = append(out, obs.GetScript())
 		}
 	}
+	dbg.Info("\tEmitting tasks for %s", rule.Name)
 	for _, task := range rule.Tasks {
 		out = append(out, task.GetScript())
 	}
