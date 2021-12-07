@@ -32,7 +32,7 @@ func (es *EvaluationStack) getSubstack(root string, stack []Rule) []Rule {
 	if len(rule.Observes) > 0 {
 		observedChange := false
 		for _, observable := range rule.Observes {
-			cmd := NewExecutable(observable)
+			cmd := NewCommand(observable)
 			_, err := cmd.Execute()
 			if err != nil {
 				observedChange = true

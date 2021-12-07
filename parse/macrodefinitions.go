@@ -150,7 +150,7 @@ func (md *MacroDefinitions) convertShellcode() {
 }
 
 func execute(what string) string {
-	cmd := NewExecutable(what)
+	cmd := NewCommand(what)
 	out, err := cmd.Execute()
 	if err != nil {
 		dbg.Error("Unable to run command %s: %v", what, err)

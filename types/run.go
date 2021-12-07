@@ -8,7 +8,7 @@ type Scriptable interface {
 	GetScript() string
 }
 
-type Runnable interface {
+type Instruction interface {
 	Executable
 	Scriptable
 }

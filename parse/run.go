@@ -24,20 +24,12 @@ type Scriptlet struct {
 	Command
 }
 
-func NewRunnable(cmd string) types.Runnable {
+func NewCommand(cmd string) types.Instruction {
 	command := Command{cmd}
 	if len(strings.Split(cmd, "\n")) > 1 {
 		return &Scriptlet{command}
 	}
 	return &Cmdlet{command}
-}
-
-func NewExecutable(cmd string) types.Executable {
-	return NewRunnable(cmd).(types.Executable)
-}
-
-func NewScriptable(cmd string) types.Scriptable {
-	return NewRunnable(cmd).(types.Scriptable)
 }
 
 func (c *Cmdlet) Execute() (string, error) {
@@ -54,7 +46,7 @@ func (c Cmdlet) GetScript() string {
 }
 
 func (s *Scriptlet) Execute() (string, error) {
-	file := "/data/Projects/geek/jabs/tmp"
+	file := "./tmp"
 	err := ioutil.WriteFile(file, []byte(s.source), 0744)
 	if err != nil {
 		dbg.FatalError("could not write file %s: %v", file, err)
@@ -71,7 +63,7 @@ func (s *Scriptlet) Execute() (string, error) {
 
 func (s Scriptlet) GetScript() string {
 	// @TODO: get proper files procedures going on
-	file := "/data/Projects/geek/jabs/tmp"
+	file := "./tmp"
 	ret := []string{
 		fmt.Sprintf("cat <<'EOF' > %s", file),
 	}
