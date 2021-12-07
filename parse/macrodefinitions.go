@@ -2,16 +2,17 @@ package parse
 
 import (
 	"jabs/dbg"
+	"jabs/types"
 	"strings"
 )
 
 type MacroDefinitions struct {
 	Dfns   []MacroDefinition
-	Macros map[string]Macro
+	Macros map[string]types.Macro
 }
 
 func NewMacroDefinitions(dfns []MacroDefinition) *MacroDefinitions {
-	md := MacroDefinitions{dfns, map[string]Macro{}}
+	md := MacroDefinitions{dfns, map[string]types.Macro{}}
 	md.preprocess()
 	return &md
 }
@@ -62,7 +63,7 @@ func (md *MacroDefinitions) convertSimple() {
 				value = execute(value)
 			}
 			dbg.Debug("Processed any dfn '%s' fully, adding it as a macro", dfn.Name)
-			md.Macros[dfn.Name] = Macro{dfn.Name, value}
+			md.Macros[dfn.Name] = types.Macro{dfn.Name, value}
 			md.Dfns = append(md.Dfns[:idx], md.Dfns[idx+1:]...)
 			break
 		}
@@ -85,7 +86,7 @@ func (md *MacroDefinitions) convertValue() {
 			// Add it as a macro and remove definition
 			if !ContainsMacros(md.Dfns[idx].Value) {
 				dbg.Debug("Processed dfn '%s' by value, adding it as a macro", dfn.Name)
-				md.Macros[dfn.Name] = Macro{dfn.Name, dfn.Value}
+				md.Macros[dfn.Name] = types.Macro{dfn.Name, dfn.Value}
 				md.Dfns = append(md.Dfns[:idx], md.Dfns[idx+1:]...)
 				break
 			}
@@ -101,7 +102,7 @@ func (md *MacroDefinitions) convertValue() {
 			// Add it as a macro and remove definition
 			if !ContainsMacros(md.Dfns[idx].Value) {
 				dbg.Debug("Processed dfn '%s' by value, adding it as a macro", dfn.Name)
-				md.Macros[dfn.Name] = Macro{dfn.Name, dfn.Value}
+				md.Macros[dfn.Name] = types.Macro{dfn.Name, dfn.Value}
 				md.Dfns = append(md.Dfns[:idx], md.Dfns[idx+1:]...)
 				break
 			}
@@ -122,7 +123,7 @@ func (md *MacroDefinitions) convertShellcode() {
 			// Add it as a macro and remove definition
 			if !ContainsMacros(md.Dfns[idx].Command) {
 				dbg.Debug("Processed dfn '%s' by cmd, adding it as a macro", dfn.Name)
-				md.Macros[dfn.Name] = Macro{dfn.Name, execute(md.Dfns[idx].Command)}
+				md.Macros[dfn.Name] = types.Macro{dfn.Name, execute(md.Dfns[idx].Command)}
 				md.Dfns = append(md.Dfns[:idx], md.Dfns[idx+1:]...)
 				break
 			}
@@ -141,7 +142,7 @@ func (md *MacroDefinitions) convertShellcode() {
 			// Add it as a macro and remove definition
 			if !ContainsMacros(md.Dfns[idx].Command) {
 				dbg.Debug("Processed dfn '%s' by cmd, adding it as a macro", dfn.Name)
-				md.Macros[dfn.Name] = Macro{dfn.Name, execute(md.Dfns[idx].Command)}
+				md.Macros[dfn.Name] = types.Macro{dfn.Name, execute(md.Dfns[idx].Command)}
 				md.Dfns = append(md.Dfns[:idx], md.Dfns[idx+1:]...)
 				break
 			}

@@ -1,28 +1,31 @@
 package parse
 
-import "jabs/dbg"
+import (
+	"jabs/dbg"
+	"jabs/types"
+)
 
 type EvaluationStack struct {
 	root  string
-	rules map[string]Rule
-	stack []Rule
+	rules map[string]types.Rule
+	stack []types.Rule
 }
 
-func NewEvaluationStack(root string, rules map[string]Rule) EvaluationStack {
-	es := EvaluationStack{root, rules, []Rule{}}
+func NewEvaluationStack(root string, rules map[string]types.Rule) EvaluationStack {
+	es := EvaluationStack{root, rules, []types.Rule{}}
 	es.init()
 	return es
 }
 
 func (es *EvaluationStack) init() {
-	es.stack = es.getSubstack(es.root, []Rule{})
+	es.stack = es.getSubstack(es.root, []types.Rule{})
 }
 
-func (es EvaluationStack) GetStack() []Rule {
+func (es EvaluationStack) GetStack() []types.Rule {
 	return es.stack
 }
 
-func (es *EvaluationStack) getSubstack(root string, stack []Rule) []Rule {
+func (es *EvaluationStack) getSubstack(root string, stack []types.Rule) []types.Rule {
 	rule, ok := es.rules[root]
 	if !ok {
 		dbg.FatalError("No such rule: %s", root)

@@ -12,23 +12,11 @@ const (
 	LIMIT_MACRO_EXPANSION_PASS Limit = 1000
 )
 
-type Macro struct {
-	Name  string
-	Value string
-}
-
 type Task string
 
-type Rule struct {
-	Name      string
-	Observes  []types.Instruction
-	DependsOn []string
-	Tasks     []types.Instruction
-}
-
 type Preprocessor struct {
-	Macros map[string]Macro
-	Rules  map[string]Rule
+	Macros map[string]types.Macro
+	Rules  map[string]types.Rule
 }
 
 func NewPreprocessor(file string) Preprocessor {
@@ -45,7 +33,7 @@ func (p *Preprocessor) initMacros(dfns []MacroDefinition) {
 }
 
 func (p *Preprocessor) initRules(dfns []RuleDefinition) {
-	rules := map[string]Rule{}
+	rules := map[string]types.Rule{}
 	for _, dfn := range dfns {
 		tasks := []types.Instruction{}
 		for _, item := range dfn.Tasks {
@@ -60,7 +48,7 @@ func (p *Preprocessor) initRules(dfns []RuleDefinition) {
 			observes = append(observes, NewCommand(p.expand(obs)))
 		}
 		name := p.expand(dfn.Name)
-		rules[name] = Rule{
+		rules[name] = types.Rule{
 			Name:      name,
 			DependsOn: dependencies,
 			Observes:  observes,
