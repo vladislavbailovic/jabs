@@ -47,7 +47,7 @@ func main() {
 	ctx := sys.ApplyEnvironment(initContext())
 
 	fs := flag.NewFlagSet("main", flag.ContinueOnError)
-	file := fs.String("f", DEFAULT_FILE, "File to process")
+	path := fs.String("p", DEFAULT_FILE, "Path: glob or file to process")
 	force := fs.Bool("force", false, "Force-run (do not stop at recoverable errors)")
 
 	notice := fs.Bool("v", false, "Verbose output (verbosity level: notice")
@@ -102,7 +102,7 @@ func main() {
 		root = DEFAULT_RULE
 	}
 
-	ctx = context.WithValue(ctx, opts.OPT_PATH, *file)
+	ctx = context.WithValue(ctx, opts.OPT_PATH, *path)
 	ctx = context.WithValue(ctx, opts.OPT_ROOT, root)
 	ctx = context.WithValue(ctx, opts.OPT_FORCE, *force)
 
@@ -121,7 +121,7 @@ func main() {
 	opts.InitOptions(ctx)
 	timer.Lap("boot")
 	dbg.Debug("\t%v subcommand (%s)", subcmdType, wantedSubcommand)
-	dbg.Debug("\tfile: %#v, root: %#v", *file, root)
+	dbg.Debug("\tpath: %#v, root: %#v", *path, root)
 
 	go func() {
 		for val := range done {
