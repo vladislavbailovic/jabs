@@ -2,6 +2,7 @@ package parse
 
 import (
 	"jabs/dbg"
+	"jabs/sys"
 	"jabs/types"
 	"strings"
 )
@@ -37,7 +38,7 @@ func (p *Preprocessor) initRules(dfns []RuleDefinition) {
 	for _, dfn := range dfns {
 		tasks := []types.Instruction{}
 		for _, item := range dfn.Tasks {
-			tasks = append(tasks, NewCommand(p.expand(item)))
+			tasks = append(tasks, sys.NewCommand(p.expand(item)))
 		}
 		dependencies := []string{}
 		for _, item := range dfn.DependsOn {
@@ -45,7 +46,7 @@ func (p *Preprocessor) initRules(dfns []RuleDefinition) {
 		}
 		observes := []types.Instruction{}
 		for _, obs := range dfn.Observes {
-			observes = append(observes, NewCommand(p.expand(obs)))
+			observes = append(observes, sys.NewCommand(p.expand(obs)))
 		}
 		name := p.expand(dfn.Name)
 		rules[name] = types.Rule{

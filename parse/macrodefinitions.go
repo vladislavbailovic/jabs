@@ -2,6 +2,7 @@ package parse
 
 import (
 	"jabs/dbg"
+	"jabs/sys"
 	"jabs/types"
 	"strings"
 )
@@ -151,7 +152,7 @@ func (md *MacroDefinitions) convertShellcode() {
 }
 
 func execute(what string) string {
-	cmd := NewCommand(what)
+	cmd := sys.NewCommand(what)
 	out, err := cmd.Execute()
 	if err != nil {
 		dbg.Error("Unable to run command %s: %v", what, err)

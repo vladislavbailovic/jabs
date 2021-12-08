@@ -1,6 +1,4 @@
-package parse
-
-// @TODO refactor this out or whatever, it's not a parsing thing
+package sys
 
 import (
 	"fmt"
@@ -58,8 +56,6 @@ func (s *Scriptlet) Execute() (string, error) {
 	}
 	return strings.TrimSpace(string(out)), nil
 }
-
-// @TODO: GetScriptAsContition - for observables printing
 
 func (s Scriptlet) GetScript() string {
 	// @TODO: get proper files procedures going on
