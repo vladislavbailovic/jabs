@@ -4,6 +4,7 @@ import (
 	"context"
 	"flag"
 	"fmt"
+	"jabs/sys"
 	"jabs/cmd"
 	"jabs/dbg"
 	"jabs/opts"
@@ -43,7 +44,7 @@ func initContext() context.Context {
 
 func main() {
 	timer := dbg.GetTimer()
-	ctx := ApplyEnvironment(initContext())
+	ctx := sys.ApplyEnvironment(initContext())
 
 	fs := flag.NewFlagSet("main", flag.ContinueOnError)
 	file := fs.String("f", DEFAULT_FILE, "File to process")
