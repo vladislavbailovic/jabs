@@ -5,14 +5,13 @@ import (
 	"fmt"
 	"jabs/opts"
 	"jabs/types"
-	"os"
 	"testing"
 )
 
 func Test_Environment(t *testing.T) {
 	ctx := ApplyEnvironment(context.TODO())
 
-	os.Setenv(envmap[opts.OPT_VERBOSITY], fmt.Sprintf("%v", types.LOG_ERROR))
+	setEnv(opts.OPT_VERBOSITY, fmt.Sprintf("%v", types.LOG_ERROR))
 	ctx = ApplyEnvironment(context.TODO())
 	l2 := ctx.Value(opts.OPT_VERBOSITY)
 	if l2 == nil {
@@ -21,5 +20,5 @@ func Test_Environment(t *testing.T) {
 	if types.LogLevel(l2.(int)) != types.LOG_ERROR {
 		t.Fatalf("Expected %v (error), got %v", types.LOG_ERROR, l2)
 	}
-	os.Setenv(envmap[opts.OPT_VERBOSITY], "")
+	setEnv(opts.OPT_VERBOSITY, "")
 }

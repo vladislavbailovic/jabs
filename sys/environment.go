@@ -7,12 +7,28 @@ import (
 	"strconv"
 )
 
-var envmap = map[opts.OptionKey]string{
-	opts.OPT_VERBOSITY: "JABS_LOG_LEVEL",
+type envVar string
+
+const (
+	ENV_VERBOSITY envVar = "JABS_LOG_LEVEL"
+)
+
+var envmap = map[opts.OptionKey]envVar{
+	opts.OPT_VERBOSITY: ENV_VERBOSITY,
+}
+
+func getEnv(opt opts.OptionKey) string {
+	key := envmap[opt]
+	return os.Getenv(string(key))
+}
+
+func setEnv(opt opts.OptionKey, val string) {
+	key := envmap[opt]
+	os.Setenv(string(key), val)
 }
 
 func ApplyEnvironment(ctx context.Context) context.Context {
-	logLevel, err := strconv.Atoi(os.Getenv(envmap[opts.OPT_VERBOSITY]))
+	logLevel, err := strconv.Atoi(getEnv(opts.OPT_VERBOSITY))
 	if err == nil {
 		ctx = context.WithValue(ctx, opts.OPT_VERBOSITY, logLevel)
 	}
