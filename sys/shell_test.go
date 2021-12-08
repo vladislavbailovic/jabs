@@ -22,4 +22,3 @@ func Test_Shebang(t *testing.T) {
 		t.Fatalf("expected bash shebang")
 	}
 }
-

@@ -2,12 +2,12 @@ package sys
 
 import (
 	"io/ioutil"
-	"path/filepath"
 	"jabs/dbg"
+	"path/filepath"
 )
 
 const (
-	TEMP_DIR string = "" // Use system temp dir
+	TEMP_DIR          string = "" // Use system temp dir
 	TEMP_FILE_PATTERN string = "jabs-tmp-*"
 )
 
@@ -21,7 +21,7 @@ func TempFilePath() string {
 }
 
 type Fileish struct {
-	path string
+	path    string
 	sources []string
 }
 
@@ -53,7 +53,7 @@ func NewFileish(path string) Fileish {
 	return Fileish{path, sources}
 }
 
-func (f Fileish)Read() []byte {
+func (f Fileish) Read() []byte {
 	data := []byte{}
 	for _, source := range f.sources {
 		file, err := ioutil.ReadFile(source)
