@@ -3,8 +3,8 @@ package parse
 import (
 	"bytes"
 	"io"
-	"io/ioutil"
 	"jabs/dbg"
+	"jabs/sys"
 
 	"gopkg.in/yaml.v2"
 )
@@ -34,11 +34,9 @@ type Parser struct {
 	RuleDefinitions  []RuleDefinition
 }
 
-func NewParser(file string) Parser {
-	data, err := ioutil.ReadFile(file)
-	if err != nil {
-		dbg.FatalError("Can't read file: %s [%v]", file, err)
-	}
+func NewParser(path string) Parser {
+	file := sys.NewFileish(path)
+	data := file.Read()
 	return Parser{
 		MacroDefinitions: parseMacros(data),
 		RuleDefinitions:  parseRules(data),
