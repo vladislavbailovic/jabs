@@ -5,6 +5,7 @@ import (
 	"flag"
 	"fmt"
 	"jabs/dbg"
+	"jabs/sys"
 	"jabs/opts"
 	"jabs/parse"
 	"jabs/types"
@@ -65,7 +66,7 @@ func (pa PrintAction) Run() {
 }
 
 func (pa PrintAction) printStack(es parse.EvaluationStack) {
-	out := []string{"#!/bin/bash", ""}
+	out := []string{sys.Shebang(), ""}
 
 	for _, rule := range es.GetStack() {
 		out = append(out, pa.printRule(rule)...)

@@ -31,8 +31,8 @@ func NewCommand(cmd string) types.Instruction {
 }
 
 func (c *Cmdlet) Execute() (string, error) {
-	args := []string{"-c", c.source}
-	out, err := exec.Command("/bin/sh", args...).Output()
+	args := []string{ShellCommandParam(), c.source}
+	out, err := exec.Command(Shell(), args...).Output()
 	if err != nil {
 		return "", err
 	}
