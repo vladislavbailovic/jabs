@@ -6,12 +6,12 @@ import (
 )
 
 type EvaluationStack struct {
-	root  string
-	rules map[string]types.Rule
+	root  types.RuleName
+	rules map[types.RuleName]types.Rule
 	stack []types.Rule
 }
 
-func NewEvaluationStack(root string, rules map[string]types.Rule) EvaluationStack {
+func NewEvaluationStack(root types.RuleName, rules map[types.RuleName]types.Rule) EvaluationStack {
 	es := EvaluationStack{root, rules, []types.Rule{}}
 	es.init()
 	return es
@@ -25,7 +25,7 @@ func (es EvaluationStack) GetStack() []types.Rule {
 	return es.stack
 }
 
-func (es *EvaluationStack) getSubstack(root string, stack []types.Rule) []types.Rule {
+func (es *EvaluationStack) getSubstack(root types.RuleName, stack []types.Rule) []types.Rule {
 	rule, ok := es.rules[root]
 	if !ok {
 		dbg.FatalError("No such rule: %s", root)
@@ -37,6 +37,7 @@ func (es *EvaluationStack) getSubstack(root string, stack []types.Rule) []types.
 		for _, observable := range rule.Observes {
 			_, err := observable.Execute()
 			if err != nil {
+				// Exited with error - yes, we should.
 				observedChange = true
 			}
 		}

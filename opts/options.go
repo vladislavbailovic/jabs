@@ -17,7 +17,7 @@ const (
 
 type Options struct {
 	Watch     bool
-	Root      string
+	Root      types.RuleName
 	Path      string
 	Force     bool
 	Verbosity types.LogLevel
@@ -56,7 +56,7 @@ func InitOptions(ctx context.Context) Options {
 	// @TODO add defaults
 	_options = Options{
 		Watch:     getBoolean(ctx, OPT_WATCH),
-		Root:      getString(ctx, OPT_ROOT),
+		Root:      types.RuleName(getString(ctx, OPT_ROOT)),
 		Path:      getString(ctx, OPT_PATH),
 		Force:     getBoolean(ctx, OPT_FORCE),
 		Verbosity: types.LogLevel(getInt(ctx, OPT_VERBOSITY)),

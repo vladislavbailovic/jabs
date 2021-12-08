@@ -2,12 +2,13 @@ package parse
 
 import (
 	"jabs/dbg"
+	"jabs/types"
 	"testing"
 )
 
 func Test_EvaluationStack_Dependent(t *testing.T) {
 	p := NewPreprocessor("../examples/first.yml")
-	es := NewEvaluationStack("root", p.Rules)
+	es := NewEvaluationStack(types.RuleName("root"), p.Rules)
 	expectedRules := 4
 	if len(es.stack) != expectedRules {
 		dbg.Debug("Stack")

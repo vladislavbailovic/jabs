@@ -1,9 +1,11 @@
 package types
 
+type RuleName string
+
 type Rule struct {
-	Name      string
+	Name      RuleName
 	Observes  []Instruction
-	DependsOn []string
+	DependsOn []RuleName
 	Tasks     []Instruction
 }
 
