@@ -58,8 +58,7 @@ func (s *Scriptlet) Execute() (string, error) {
 }
 
 func (s Scriptlet) GetScript() string {
-	// @TODO: get proper files procedures going on
-	file := "./tmp"
+	file := TempFilePath()
 	ret := []string{
 		fmt.Sprintf("cat <<'EOF' > %s", file),
 	}
