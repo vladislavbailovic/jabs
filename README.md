@@ -5,13 +5,12 @@ Just Another Build System
 TODO
 ----
 
-- [ ] Other formats output
-- [ ] Output transformers
-- [ ] Build server
 - [ ] Defaults conventions
 - [ ] Timestamps bank
 - [ ] Standard library
-- [ ] Multi-file definitions
+- [ ] Other formats output
+- [ ] Output transformers
+- [ ] Build server
 
 
 Feature list
@@ -33,3 +32,4 @@ Feature list
 - Option to stop and plow through on execution error (`--force`)
 - Can optionally include rule conditions in print output
 - Can toggle verbosity from CLI params
+- Can load multi-file definitions by making use of file globs
