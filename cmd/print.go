@@ -12,12 +12,6 @@ import (
 	"strings"
 )
 
-type subcommandOptions struct {
-	includeConditions *bool
-}
-
-var options subcommandOptions = subcommandOptions{}
-
 type PrintAction struct {
 	out   chan string
 	state chan types.ActionState
@@ -25,24 +19,21 @@ type PrintAction struct {
 
 type PrintSubcommand struct {
 	PrintAction
-	fs *flag.FlagSet
+	fs                *flag.FlagSet
+	includeConditions *bool
 }
 
 func NewPrintSubcommand(fs *flag.FlagSet) *PrintSubcommand {
 	ps := PrintSubcommand{fs: fs}
 	ps.out = make(chan string)
 	ps.state = make(chan types.ActionState)
-	options.includeConditions = fs.Bool("conds", false, "Include rule conditions in output")
+	ps.includeConditions = fs.Bool("conds", false, "Include rule conditions in output")
 	return &ps
 }
 
 func (ps *PrintSubcommand) Init(ctx context.Context) context.Context {
 	ps.state <- types.STATE_INIT
-	// ...
-	// privates are now populated with flags
-	// so init context and return it
-
-	// dbg.Debug("WHATEVER: [%s]", *ps.whatever)
+	ctx = context.WithValue(ctx, opts.OPT_CONDITIONS, *ps.includeConditions)
 	return ctx
 }
 
@@ -77,9 +68,10 @@ func (pa PrintAction) printStack(es parse.EvaluationStack) {
 
 func (pa PrintAction) printRule(rule types.Rule) []string {
 	out := []string{}
+	options := opts.GetOptions()
 	out = append(out, fmt.Sprintf("# Rule [%s] ---", rule.Name))
 	dbg.Info("Printing %s", rule.Name)
-	if *options.includeConditions {
+	if options.Conditions {
 		dbg.Info("\tEmitting rule conditions for %s", rule.Name)
 		for _, obs := range rule.Observes {
 			out = append(out, obs.GetScript())

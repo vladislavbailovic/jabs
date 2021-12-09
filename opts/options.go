@@ -13,6 +13,9 @@ const (
 	OPT_PATH
 	OPT_FORCE
 	OPT_VERBOSITY
+
+	// Print subcommand
+	OPT_CONDITIONS
 )
 
 type Options struct {
@@ -21,6 +24,9 @@ type Options struct {
 	Path      string
 	Force     bool
 	Verbosity types.LogLevel
+
+	// Print subcommand
+	Conditions bool
 }
 
 var _options Options
@@ -60,6 +66,9 @@ func InitOptions(ctx context.Context) Options {
 		Path:      getString(ctx, OPT_PATH),
 		Force:     getBoolean(ctx, OPT_FORCE),
 		Verbosity: types.LogLevel(getInt(ctx, OPT_VERBOSITY)),
+
+		// Print subcommand
+		Conditions: getBoolean(ctx, OPT_CONDITIONS),
 	}
 	return _options
 }
