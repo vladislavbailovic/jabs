@@ -2,6 +2,8 @@ package sys
 
 import (
 	"io/ioutil"
+	"os"
+	"jabs/types"
 	"jabs/dbg"
 	"path/filepath"
 )
@@ -64,4 +66,74 @@ func (f Fileish) Read() []byte {
 		data = append(data, file...)
 	}
 	return data
+}
+
+type Dirlist struct {
+	root types.PathPattern
+}
+
+func (d Dirlist) Read() []string {
+	return d.readDirs(d.root, []string{})
+}
+
+func (d Dirlist) readDirs(root types.PathPattern, dirs []string) []string {
+	dirFilter := DirFilter{}
+	paths, err := filepath.Glob(string(root))
+	if err != nil {
+		dbg.FatalError("Unable to get directories (%s): %v", root, err)
+	}
+
+	for _, path := range paths {
+		if filepath.Base(path)[0:1] == "." {
+			continue
+		}
+		abs, err := filepath.Abs(path)
+		if err != nil {
+			dbg.FatalError("Unable to determine path for %s: %v", path, err)
+		}
+
+		if dirFilter.Matches(abs) {
+			dirs = append(dirs, abs)
+			dirs = d.readDirs(
+				types.PathPattern(abs + string(os.PathSeparator) + "*"), dirs)
+		}
+	}
+
+	return dirs
+}
+
+func NewDirlist(root types.PathPattern) Dirlist {
+	return Dirlist{root}
+}
+
+type Filter interface {
+	Matches(path string) bool
+}
+
+type FilenameFilter struct {
+	pattern types.FilenamePattern
+}
+
+func (pf FilenameFilter)Matches (what string) bool {
+	isMatch, err := filepath.Match(string(pf.pattern), what)
+	if err != nil {
+		return false
+	}
+	return isMatch
+}
+
+type DirFilter struct {}
+func (df DirFilter)Matches (what string) bool {
+	stat, err := os.Stat(what)
+	if err != nil {
+		return false
+	}
+	return stat.IsDir()
+}
+
+func NewFilter(params ...interface{}) Filter {
+	if len(params) > 0 {
+		return FilenameFilter{params[0].(types.FilenamePattern)}
+	}
+	return DirFilter{}
 }

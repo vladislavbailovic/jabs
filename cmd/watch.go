@@ -5,8 +5,8 @@ import (
 	"flag"
 	"jabs/dbg"
 	"jabs/opts"
+	"jabs/sys"
 	"jabs/types"
-	"os"
 	"time"
 	"fmt"
 	"path/filepath"
@@ -63,7 +63,7 @@ func (ws WatchSubcommand) Run() {
 	dbg.Info("File from %s", options.Path)
 	dbg.Info("Rule is %s", options.Root)
 
-	sources := getDirs()
+	sources := sys.NewDirlist(options.Directory)
 	dbg.Info("Sources: %v", sources)
 
 	watcher, err := fsnotify.NewWatcher()
@@ -73,7 +73,7 @@ func (ws WatchSubcommand) Run() {
 	defer watcher.Close()
 
 	action := NewAction(options.Action)
-	filter := FilenameFilter{ options.Filter }
+	filter := sys.NewFilter(options.Filter)
 
 	go func() {
 		for {
@@ -137,73 +137,11 @@ func (ws WatchSubcommand) Run() {
 	}()
 
 	done := make(chan bool)
-	for _, fp := range sources {
+	for _, fp := range sources.Read() {
 		err := watcher.Add(fp)
 		if err != nil {
 			dbg.FatalError("%v", err)
 		}
 	}
 	<-done
-}
-
-
-// @TODO refactor into FS: dirlist and filter structs
-
-func getDirs() []string {
-	options := opts.GetOptions()
-	root := string(options.Directory)
-	if root == "" {
-		root = "../*"
-	}
-	return getSubdirs(root, []string{})
-}
-
-func getSubdirs(root string, dirs []string) []string {
-	dirFilter := DirFilter{}
-	paths, err := filepath.Glob(root)
-	if err != nil {
-		dbg.FatalError("Unable to get directories (%s): %v", root, err)
-	}
-
-	for _, path := range paths {
-		if filepath.Base(path)[0:1] == "." {
-			continue
-		}
-		abs, err := filepath.Abs(path)
-		if err != nil {
-			dbg.FatalError("Unable to determine path for %s: %v", path, err)
-		}
-
-		if dirFilter.Matches(abs) {
-			dirs = append(dirs, abs)
-			dirs = getSubdirs(abs + string(os.PathSeparator) + "*", dirs)
-		}
-	}
-
-	return dirs
-}
-
-type Filter interface {
-	Matches(path string) bool
-}
-
-type FilenameFilter struct {
-	pattern types.FilenamePattern
-}
-
-func (pf FilenameFilter)Matches (what string) bool {
-	isMatch, err := filepath.Match(string(pf.pattern), what)
-	if err != nil {
-		return false
-	}
-	return isMatch
-}
-
-type DirFilter struct {}
-func (df DirFilter)Matches (what string) bool {
-	stat, err := os.Stat(what)
-	if err != nil {
-		return false
-	}
-	return stat.IsDir()
 }
