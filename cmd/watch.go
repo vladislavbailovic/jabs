@@ -8,7 +8,6 @@ import (
 	"jabs/sys"
 	"jabs/types"
 	"time"
-	"fmt"
 	"path/filepath"
 
 	"github.com/fsnotify/fsnotify"
@@ -95,10 +94,11 @@ func (ws WatchSubcommand) Run() {
 
 	// Rate-limit the runs
 	limiter := time.Tick(SLEEPYTIME * time.Millisecond)
-	var triggeringPath string
+	var triggeringAction bool
 	go func() {
-		for tick := range limiter {
-			triggeringPath = fmt.Sprintf("%v", tick)
+		for {
+			<-limiter
+			triggeringAction = false
 		}
 	}()
 
@@ -107,9 +107,8 @@ func (ws WatchSubcommand) Run() {
 			select {
 
 			case event := <-watcher.Events:
-				if event.Name == triggeringPath {
-					dbg.Debug("Event source same as previous, skip: %s",
-						event.Name)
+				if triggeringAction {
+					dbg.Debug("Waiting for action cooldown: %dms", SLEEPYTIME)
 					continue
 				}
 				fname := filepath.Base(event.Name)
@@ -126,7 +125,7 @@ func (ws WatchSubcommand) Run() {
 					dbg.Debug("---- %v on %v ----", event.Op, event.Name)
 					ws.state <- types.STATE_RUN
 					action.Run()
-					triggeringPath = event.Name
+					triggeringAction = true
 				}
 
 			case err := <-watcher.Errors:
