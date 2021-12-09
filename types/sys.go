@@ -12,3 +12,6 @@ type Instruction interface {
 	Executable
 	Scriptable
 }
+
+type FilenamePattern string
+type PathPattern string

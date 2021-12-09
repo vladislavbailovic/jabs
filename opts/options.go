@@ -19,6 +19,8 @@ const (
 
 	// Watch subcommand
 	OPT_ACTION
+	OPT_DIRECTORY
+	OPT_FILTER
 )
 
 type Options struct {
@@ -33,6 +35,8 @@ type Options struct {
 
 	// Watch subcommand
 	Action types.ActionType
+	Directory types.PathPattern
+	Filter types.FilenamePattern
 }
 
 var _options Options
@@ -78,6 +82,8 @@ func InitOptions(ctx context.Context) Options {
 
 		// Watch subcommand
 		Action: types.ActionType(getInt(ctx, OPT_ACTION)),
+		Directory: types.PathPattern(getString(ctx, OPT_DIRECTORY)),
+		Filter: types.FilenamePattern(getString(ctx, OPT_FILTER)),
 	}
 	return _options
 }
