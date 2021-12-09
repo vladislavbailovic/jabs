@@ -38,13 +38,9 @@ func (s WatchSubcommand) State() chan types.ActionState {
 	return s.state
 }
 
-func (ws *WatchSubcommand) Init(ctx context.Context) context.Context {
+func (ws WatchSubcommand) Init(ctx context.Context) context.Context {
 	ws.state <- types.STATE_INIT
-	// ...
-	// privates are now populated with flags
-	// so init context and return it
-
-	// dbg.Debug("WHATEVER: [%s]", *ws.whatever)
+	ctx = context.WithValue(ctx, opts.OPT_ACTION, int(ActionType(*ws.action)))
 	return ctx
 }
 
@@ -66,7 +62,7 @@ func (ws WatchSubcommand) Run() {
 	}
 	defer watcher.Close()
 
-	action := NewAction(ActionType(*ws.action))
+	action := NewAction(options.Action)
 
 	go func() {
 		for {

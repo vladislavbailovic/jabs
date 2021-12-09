@@ -31,7 +31,7 @@ func NewPrintSubcommand(fs *flag.FlagSet) *PrintSubcommand {
 	return &ps
 }
 
-func (ps *PrintSubcommand) Init(ctx context.Context) context.Context {
+func (ps PrintSubcommand) Init(ctx context.Context) context.Context {
 	ps.state <- types.STATE_INIT
 	ctx = context.WithValue(ctx, opts.OPT_CONDITIONS, *ps.includeConditions)
 	return ctx

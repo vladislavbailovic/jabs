@@ -16,6 +16,9 @@ const (
 
 	// Print subcommand
 	OPT_CONDITIONS
+
+	// Watch subcommand
+	OPT_ACTION
 )
 
 type Options struct {
@@ -27,6 +30,9 @@ type Options struct {
 
 	// Print subcommand
 	Conditions bool
+
+	// Watch subcommand
+	Action types.ActionType
 }
 
 var _options Options
@@ -69,6 +75,9 @@ func InitOptions(ctx context.Context) Options {
 
 		// Print subcommand
 		Conditions: getBoolean(ctx, OPT_CONDITIONS),
+
+		// Watch subcommand
+		Action: types.ActionType(getInt(ctx, OPT_ACTION)),
 	}
 	return _options
 }
