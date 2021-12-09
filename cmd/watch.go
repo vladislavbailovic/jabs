@@ -8,12 +8,13 @@ import (
 	"jabs/types"
 	"os"
 	"time"
+	"fmt"
 	"path/filepath"
 
 	"github.com/fsnotify/fsnotify"
 )
 
-const SLEEPYTIME time.Duration = 500
+const SLEEPYTIME time.Duration = 5000
 
 type WatchSubcommand struct {
 	fs     *flag.FlagSet
@@ -92,32 +93,40 @@ func (ws WatchSubcommand) Run() {
 		}
 	}()
 
+	// Rate-limit the runs
+	limiter := time.Tick(SLEEPYTIME * time.Millisecond)
+	var triggeringPath string
+	go func() {
+		for tick := range limiter {
+			triggeringPath = fmt.Sprintf("%v", tick)
+		}
+	}()
+
 	go func() {
 		for {
 			select {
 
 			case event := <-watcher.Events:
+				if event.Name == triggeringPath {
+					dbg.Debug("Event source same as previous, skip: %s",
+						event.Name)
+					continue
+				}
 				fname := filepath.Base(event.Name)
 				if !filter.Matches(fname) {
-					dbg.Warning("Event source does not match filter: %s", event.Name)
+					dbg.Debug("Event source does not match filter: %s",
+						event.Name)
 					continue
 				}
 				switch {
 				case event.Op&fsnotify.Remove == fsnotify.Remove:
-					dbg.Notice("re-adding %s", event.Name)
 					watcher.Remove(event.Name)
-					time.Sleep(time.Millisecond * SLEEPYTIME)
-					// err := watcher.Add(event.Name)
-					// if err != nil {
-					// 	dbg.FatalError("%v", err)
-					// }
-					// time.Sleep(time.Millisecond * SLEEPYTIME)
 					continue
 				default:
 					dbg.Debug("---- %v on %v ----", event.Op, event.Name)
-					time.Sleep(time.Millisecond * SLEEPYTIME)
 					ws.state <- types.STATE_RUN
 					action.Run()
+					triggeringPath = event.Name
 				}
 
 			case err := <-watcher.Errors:
